@@ -96,6 +96,7 @@ def list_cart(request):
     return render(request, 'cart.html', {'cart_items': cart_items, 'total_price':total_price})
 
 
+
 def remove_from_cart(request, cart_item_id):
     cart_item = get_object_or_404(Cart, id=cart_item_id)
     cart_item.delete()
