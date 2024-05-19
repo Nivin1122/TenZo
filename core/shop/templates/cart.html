@@ -61,9 +61,7 @@
                             <i class="icon-bars"></i>
                         </button>
 
-                        <a href="index.html" class="logo">
-                            <img src="{% static 'assets/images/logo.png' %}" alt="Molla Logo" width="105" height="25">
-                        </a>
+                        
 
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
@@ -95,11 +93,11 @@
 
                                     
                                 </li>
-                                <!-- <li>
-                                    <a href="blog.html" class="sf-with-ul">Blog</a>
+                                <li>
+                                    <a href="/profile/" class="sf-with-ul">PROFILE</a>
 
                                     
-                                </li> -->
+                                </li>
                                 <!-- <li>
                                     <a href="elements-list.html" class="sf-with-ul">Elements</a>
 
@@ -229,8 +227,8 @@
             	<div class="cart">
 	                <div class="container">
 	                	<div class="row">
-	                		<div class="col-lg-9">
-	                			<table class="table table-cart table-mobile">
+                            <div class="col-lg-9">
+                                <table class="table table-cart table-mobile">
                                     <thead>
                                         <tr>
                                             <th>Product</th>
@@ -257,89 +255,82 @@
                                             </td>
                                             <td class="price-col">{{ cart_item.product.price }}</td>
                                             <td class="quantity-col">{{ cart_item.quantity }}</td>
-                                            <td class="total-col">{{ cart_item.total_price }}</td>
+                                            <td class="total-col">{{ cart_item.product.price|floatformat:2 }}</td>
                                             <td class="remove-col">
-                                                
-                                                    
-                                                    <a href="{% url 'remove_from_cart' cart_item.id %}"><button type="submit" class="btn-remove"><i class="icon-close"></i></button></a>
-                                                
+                                                <a href="{% url 'remove_from_cart' cart_item.id %}">
+                                                    <button type="submit" class="btn-remove"><i class="icon-close"></i></button>
+                                                </a>
                                             </td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>
-                                
-                                
-                                
-                                
-
-	                			<div class="cart-bottom">
-			            			<div class="cart-discount">
-			            				<form action="#">
-			            					<div class="input-group">
-				        						<input type="text" class="form-control" required placeholder="coupon code">
-				        						<div class="input-group-append">
-													<button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
-												</div><!-- .End .input-group-append -->
-			        						</div><!-- End .input-group -->
-			            				</form>
-			            			</div><!-- End .cart-discount -->
-
-			            			<a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
-		            			</div><!-- End .cart-bottom -->
-	                		</div><!-- End .col-lg-9 -->
-	                		<aside class="col-lg-3">
-	                			<div class="summary summary-cart">
-	                				<h3 class="summary-title">Cart Totallll</h3><!-- End .summary-title -->
-
-	                				<table class="table table-summary">
-	                					<tbody>
-	                						<tr class="summary-subtotal">
-	                							<td>Subtotal:</td>
-	                							<td>$160.00</td>
-	                						</tr><!-- End .summary-subtotal -->
-	                						
-
-	                						
-
-	                						<tr class="summary-shipping-row">
-	                							<td>
-	                								<div class="custom-control custom-radio">
-														<input type="radio" id="standart-shipping" name="shipping" class="custom-control-input">
-														<!-- <label class="custom-control-label" for="standart-shipping">Standart:</label> -->
-													</div><!-- End .custom-control -->
-	                							</td>
-	                							<!-- <td>$10.00</td> -->
-	                						</tr><!-- End .summary-shipping-row -->
-
-	                						<!-- <tr class="summary-shipping-row">
-	                							<td>
-	                								<div class="custom-control custom-radio">
-														<input type="radio" id="express-shipping" name="shipping" class="custom-control-input">
-														<label class="custom-control-label" for="express-shipping">Express:</label>
-													</div>
-	                							</td>
-	                							<td>$20.00</td>
-	                						</tr> -->
-
-	                						<tr class="summary-shipping-estimate">
-	                							<td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
-	                							<td>&nbsp;</td>
-	                						</tr><!-- End .summary-shipping-estimate -->
-
-	                						<tr class="summary-total">
-	                							<td>Total:</td>
-	                							<td>$160.00</td>
-	                						</tr><!-- End .summary-total -->
-	                					</tbody>
-	                				</table><!-- End .table table-summary -->
-
-	                				<a href="/checkout/" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
-	                			</div><!-- End .summary -->
-
-		            			<a href="/all_products/" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
-	                		</aside><!-- End .col-lg-3 -->
-	                	</div><!-- End .row -->
+                        
+                                <div class="cart-bottom">
+                                    <div class="cart-discount">
+                                        <form action="#">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" required placeholder="coupon code">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
+                                                </div><!-- .End .input-group-append -->
+                                            </div><!-- End .input-group -->
+                                        </form>
+                                    </div><!-- End .cart-discount -->
+                        
+                                    <a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
+                                </div><!-- End .cart-bottom -->
+                            </div><!-- End .col-lg-9 -->
+                            <aside class="col-lg-3">
+                                <div class="summary summary-cart">
+                                    <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
+                        
+                                    <table class="table table-summary">
+                                        <tbody>
+                                            <tr class="summary-subtotal">
+                                                <td>Subtotal:</td>
+                                                <td>${{ total_price|floatformat:2 }}</td>
+                                            </tr><!-- End .summary-subtotal -->
+                        
+                                            <tr class="summary-shipping-row">
+                                                <td>
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" id="standart-shipping" name="shipping" class="custom-control-input">
+                                                        <!-- <label class="custom-control-label" for="standart-shipping">Standart:</label> -->
+                                                    </div><!-- End .custom-control -->
+                                                </td>
+                                                <!-- <td>$10.00</td> -->
+                                            </tr><!-- End .summary-shipping-row -->
+                        
+                                            <!-- <tr class="summary-shipping-row">
+                                                <td>
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" id="express-shipping" name="shipping" class="custom-control-input">
+                                                        <label class="custom-control-label" for="express-shipping">Express:</label>
+                                                    </div>
+                                                </td>
+                                                <td>$20.00</td>
+                                            </tr> -->
+                        
+                                            <tr class="summary-shipping-estimate">
+                                                <td>Estimate for Your Country<br> <a href="/add_user_address/">Change address</a></td>
+                                                <td>&nbsp;</td>
+                                            </tr><!-- End .summary-shipping-estimate -->
+                        
+                                            <tr class="summary-total">
+                                                <td>Total:</td>
+                                                <td>${{ total_price|floatformat:2 }}</td>
+                                            </tr><!-- End .summary-total -->
+                                        </tbody>
+                                    </table><!-- End .table table-summary -->
+                        
+                                    <a href="/checkout/" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
+                                </div><!-- End .summary -->
+                        
+                                <a href="/all_products/" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+                            </aside><!-- End .col-lg-3 -->
+                        </div><!-- End .row -->
+                        
 	                </div><!-- End .container -->
                 </div><!-- End .cart -->
             </div><!-- End .page-content -->
@@ -351,7 +342,7 @@
 	            	<div class="row">
 	            		<div class="col-sm-6 col-lg-3">
 	            			<div class="widget widget-about">
-	            				<img src="{% static 'assets/images/logo.png' %}" class="footer-logo" alt="Footer Logo" width="105" height="25">
+	            				
 	            				<p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. </p>
 
 	            				<div class="social-icons">

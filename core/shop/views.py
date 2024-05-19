@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from product_side.models import Product,Category,Cart
+from product_side.models import Product,Category,Cart,CartItem
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
@@ -92,7 +92,8 @@ def add_to_cart(request, product_id):
 def list_cart(request):
     user = request.user
     cart_items = Cart.objects.filter(user=user)
-    return render(request, 'cart.html', {'cart_items': cart_items})
+    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    return render(request, 'cart.html', {'cart_items': cart_items, 'total_price':total_price})
 
 
 def remove_from_cart(request, cart_item_id):
@@ -103,5 +104,8 @@ def remove_from_cart(request, cart_item_id):
 
 
 def checkout(request):
+    user = request.user
     user_addresses = Address.objects.filter(user=request.user)
-    return render(request, 'checkout.html',{'user_addresses':user_addresses})
+    cart_items = Cart.objects.filter(user=user)
+    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    return render(request, 'checkout.html',{'user_addresses':user_addresses, 'total_price' : total_price})
