@@ -1,0 +1,136 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>signup</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- End layout styles -->
+    <!-- <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" /> -->
+  </head>
+  <body>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="row w-100 m-0">
+          <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
+            <div class="card col-lg-4 mx-auto">
+              <div class="card-body px-5 py-5">
+                <h3 class="card-title text-left mb-3">Signup</h3>
+                <form method="POST" id = "signup_form" class = "form">
+                  <div class="form-group">
+                    {% csrf_token %}
+                    <label>Username *</label>
+                    <input type="text" name = "uname" class="form-control p_input" required value = "{{username}}" onchange = "document.getElementById('uname_error').style.display = 'none'">
+                    {% if username_exists %}
+                      <p class = "error" id = "uname_error">Username already exists</p>
+                    {% endif %}
+                  </div>
+                  <div class="form-group">
+                    <label>Email * </label>
+                    <input type="email" name = "email" class="form-control p_input" required value = "{{email}}" onchange = "document.getElementById('email_error').style.display = 'none'">
+                    {% if email_exists %}
+                    <p class = "error" id = "email_error">Email already exists</p>
+                    {% endif %}
+                  </div>
+                  <div class="form-group">
+                    <label>Password *</label>
+                    <input type="password" name = "pass1" class="form-control p_input" id = "pass1" required minlength="8">
+                  </div>
+                  <div class="form-group">
+                    <label>confirm password *</label>
+                    <input type="password" name = "pass2" class="form-control p_input" required>
+                    {% for message in messages %}
+                      <p style="color: red;">{{message}}</p>
+                    {% endfor %}
+
+                  </div>
+                  <div class="form-group d-flex align-items-center justify-content-between">
+                    <div class="form-check">
+                      
+                    </div>
+
+                  </div>
+            
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-block enter-btn">signup</button>
+                </form>
+                
+              </div>
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+        </div>
+        <!-- row ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="{% static 'vendors/js/vendor.bundle.base.js' %}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'js/off-canvas.js' %}"></script>
+    <script src="{% static 'js/hoverable-collapse.js' %}"></script>
+    <script src="{% static 'js/misc.js' %}"></script>
+    <script src="{% static 'js/settings.js' %}"></script>
+    <script src="{% static 'js/todolist.js' %}"></script>
+    <!-- endinject -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" ></script>
+    <script>
+      $("#signup_form").validate({
+        rules:{
+          uname:{
+            required: true,
+            minlength: 3,
+            maxlength: 200,
+          },
+          email:{
+            required: true,
+          },
+          pass1:{
+            required: true,
+            minlength: 8
+          },
+          pass2:{
+            required: true,
+            equalTo: "#pass1"
+          },
+        },
+        messages: {
+          uname: {
+            required: "Username is required",
+            minlength: "Username should have minimum 3 characters",
+            maxlength: "Username should not exceed 200 characters",
+          },
+          email: {
+            required: "Email is required",
+          },
+          pass1: {
+            required: "Password is required",
+            minlength: "Password should have minimum 8 characters",
+          },
+          pass2: {
+            required: "Confirm password is required",
+            equalTo: "Password doesn't match",
+          },
+        }
+      })
+    </script>
+  </body>
+</html>

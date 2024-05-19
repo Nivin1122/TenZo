@@ -1,0 +1,516 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- molla/index-18.html 22 Nov 2019 10:00:41 GMT -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Home page</title>
+    <meta name="keywords" content="HTML5 Template">
+    <meta name="description" content="home page">
+    <meta name="author" content="p-themes">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/images/icons/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'assets/images/icons/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/images/icons/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'assets/images/icons/site.html' %}">
+    <link rel="mask-icon" href="{% static 'assets/images/icons/safari-pinned-tab.svg'%}" color="#666666">
+    <link rel="shortcut icon" href="{% static 'assets/images/icons/favicon.ico' %}">
+    <meta name="apple-mobile-web-app-title" content="Molla">
+    <meta name="application-name" content="Molla">
+    <meta name="msapplication-TileColor" content="#cc9966">
+    <meta name="msapplication-config" content="{% static 'assets/images/icons/browserconfig.xml' %}">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Plugins CSS File -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/plugins/owl-carousel/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/plugins/magnific-popup/magnific-popup.css' %}">
+    <!-- Main CSS File -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/demos/demo-18.css' %}">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <header class="header header-11">
+            <div class="header-middle sticky-header">
+                <div class="container">
+                    <div class="header-left">
+                        <nav class="main-nav">
+                            <ul class="menu sf-arrows">
+                                <li class="megamenu-container active">
+                                    <a href="" class="sf-with-ul">Home</a>
+
+
+                                </li>
+                                <li>
+                                    <a href="/all_products/" class="sf-with-ul">Shop</a>
+
+
+                                </li>
+                                <li>
+                                    {% if request.user.is_authenticated %}
+                                    <a href="/user_logout/" class="sf-with-ul">Logout</a>
+                                    {% else %}
+                                    <a href="/user_login/" class="sf-with-ul">Login</a>
+                                    {% endif %}
+                                </li>
+                                <li class="megamenu-container active">
+                                    {% if request.user.is_authenticated %}
+                                    <a href="/profile/" class="sf-with-ul">profile</a>
+                                    {% endif %}
+
+                                </li>
+                            </ul><!-- End .menu -->
+                        </nav><!-- End .main-nav -->
+
+                        <button class="mobile-menu-toggler">
+                            <span class="sr-only">Toggle mobile menu</span>
+                            <i class="icon-bars"></i>
+                        </button>
+                    </div><!-- End .header-left -->
+
+
+                    <div class="header-right">
+                        <div class="header-search header-search-extended header-search-visible">
+                            <a href="#" class="search-toggle" role="button"><i class="icon-search"></i></a>
+                            <form action="#" method="get">
+                                <div class="header-search-wrapper">
+                                    <label for="q" class="sr-only">Search</label>
+                                    <input type="search" class="form-control" name="q" id="q"
+                                        placeholder="Search product ..." required>
+                                    <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+                                </div><!-- End .header-search-wrapper -->
+                            </form>
+                        </div><!-- End .header-search -->
+
+                        <a href="wishlist.html" class="wishlist-link">
+                            <i class="icon-heart-o"></i>
+                            <span class="wishlist-count">3</span>
+                        </a>
+
+                        <div class="dropdown cart-dropdown">
+                            <a href="/cart/" class="dropdown-toggle" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false" data-display="static">
+                                <i class="icon-shopping-cart"></i>
+                                <span class="cart-count">2</span>
+                            </a>
+
+                            
+                        </div><!-- End .cart-dropdown -->
+                    </div><!-- End .header-right -->
+                </div><!-- End .container -->
+            </div><!-- End .header-middle -->
+        </header><!-- End .header -->
+
+        <main class="main">
+            <div class="intro-slider-container mb-3 mb-lg-5">
+                <div class="intro-slider owl-carousel owl-theme owl-nav-inside owl-light" data-toggle="owl"
+                    data-owl-options='{"dots": true, "nav": false}'>
+                    <div class="intro-slide"
+                        style="background-image: url(static/assets/images/demos/demo-18/slider/slide-1.jpg);">
+                        <div class="container">
+                            <div class="intro-content text-center">
+                                <h3 class="intro-subtitle cross-txt text-primary">SEASONAL PICKS</h3>
+                                <!-- End .h3 intro-subtitle -->
+                                <h1 class="intro-title text-white">Summer Sale</h1><!-- End .intro-title -->
+                                <div class="intro-text text-white">up to 70% off</div><!-- End .intro-text -->
+                                <div class="intro-action cross-txt">
+                                    <a href="category.html" class="btn btn-outline-white">
+                                        <span>Discover More</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div><!-- End .intro-content -->
+                    </div><!-- End .intro-slide -->
+
+                    <div class="intro-slide"
+                        style="background-image: url(assets/images/demos/demo-18/slider/slide-2.jpg);">
+                        <div class="container">
+                            <div class="intro-content text-center">
+                                <h3 class="intro-subtitle text-primary cross-txt">Women's Accessories</h3>
+                                <!-- End .h3 intro-subtitle -->
+                                <h1 class="intro-title text-white">Save up to</h1><!-- End .intro-title -->
+                                <div class="intro-text text-white">30-50% off</div><!-- End .intro-text -->
+                                <div class="intro-action cross-txt">
+                                    <a href="category.html" class="btn btn-outline-white">
+                                        <span>Discover More</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div><!-- End .intro-content -->
+                    </div><!-- End .intro-slide -->
+                </div><!-- End .intro-slider owl-carousel owl-simple -->
+
+                <span class="slider-loader text-white"></span><!-- End .slider-loader -->
+            </div><!-- End .intro-slider-container -->
+
+
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2 class="title" style="text-align: center;">Recent Arrivals</h2><!-- End .title -->
+                        <div class="products-container mb-7">
+                            <div class="row justify-content-center">
+                                {% for product in products %}
+                                    {% if product.stock > 0 %}
+                                        <div class="col-6 col-md-4" style='padding-right: 100px;'>
+                                            <div class="product product-4">
+                                                <figure class="product-media">
+                                                    <a href="{% url 'product_details' product.id %}?image_url={{ product.image.url }}">
+                                                        <img src="{{ product.image.url }}" alt="Product image" class="product-image">
+                                                    </a>
+                                                    
+                                                    <div class="product-action-vertical">
+                                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                                        <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
+                                                    </div><!-- End .product-action-vertical -->
+                            
+                                                    <!-- Form to add product to cart -->
+                                                    <form method="post" class="product-action" action="{% url 'add_to_cart' product.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-primary" style="width:100%;">Add to Cart</button>
+                                                    </form>
+                                                </figure><!-- End .product-media -->
+                            
+                                                <div class="product-body">
+                                                    <div class="product-cat">
+                                                        <a href="#">Clothing</a>
+                                                    </div><!-- End .product-cat -->
+                                                    <h3 class="product-title"><a href="product.html">{{ product.name }}</a></h3>
+                                                    <!-- End .product-title -->
+                                                    <div class="product-price">
+                                                        {{ product.price }}
+                                                    </div><!-- End .product-price -->
+                                                    
+                                                </div><!-- End .product-body -->
+                            
+                                                <!-- Display stock quantity -->
+                                                <div class="product-stock">
+                                                    Stock: {{ product.stock }}
+                                                    {% if product.cart_quantity > 5 %}
+                                                    <p class="error-message">Maximum 5 products allowed per person.</p>
+                                                    {% endif %}
+                                                </div><!-- End .product-stock -->
+                                            </div><!-- End .product -->
+                                        </div><!-- End .col-sm-6 col-md-4 -->
+                                    {% endif %}
+                                {% endfor %}
+                            </div><!-- End .row -->
+                            
+                            
+                            
+
+
+
+                            <div class="more-container text-center mt-0 mb-0">
+                                <a href="/all_products/" class="btn btn-outline-primary-2 btn-more">
+                                    <span>View more Products</span>
+                                </a>
+                            </div><!-- End .more-container -->
+                        </div><!-- End .products -->
+                    </div><!-- End .col-lg-9 -->
+
+                </div><!-- End .row -->
+
+
+
+
+            </div><!-- End .container -->
+
+
+        </main><!-- End .main -->
+
+        <footer class="footer footer-dark">
+            <div class="icon-boxes-container">
+                <div class="container">
+
+                </div><!-- End .container -->
+            </div><!-- End .icon-boxes-container -->
+            <div class="footer-middle">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget widget-about">
+                                <img src="{% static 'assets/images/demos/demo-18/logo-footer.png' %}"
+                                    class="footer-logo" alt="Footer Logo" width="82" height="25">
+                                <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate
+                                    magna eros eu erat. </p>
+
+                                <div class="social-icons">
+                                    <a href="#" class="social-icon" title="Facebook" target="_blank"><i
+                                            class="icon-facebook-f"></i></a>
+                                    <a href="#" class="social-icon" title="Twitter" target="_blank"><i
+                                            class="icon-twitter"></i></a>
+                                    <a href="#" class="social-icon" title="Instagram" target="_blank"><i
+                                            class="icon-instagram"></i></a>
+                                    <a href="#" class="social-icon" title="Youtube" target="_blank"><i
+                                            class="icon-youtube"></i></a>
+                                    <a href="#" class="social-icon" title="Pinterest" target="_blank"><i
+                                            class="icon-pinterest"></i></a>
+                                </div>
+                            </div><!-- End .widget about-widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+
+                                <ul class="widget-list">
+                                    <li><a href="about.html">About Molla</a></li>
+                                    <li><a href="#">How to shop on Molla</a></li>
+                                    <li><a href="#">FAQ</a></li>
+                                    <li><a href="contact.html">Contact us</a></li>
+                                    <li><a href="login.html">Log in</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">Customer Service</h4>
+
+                                <ul class="widget-list">
+                                    <li><a href="#">Payment Methods</a></li>
+                                    <li><a href="#">Money-back guarantee!</a></li>
+                                    <li><a href="#">Returns</a></li>
+                                    <li><a href="#">Shipping</a></li>
+                                    <li><a href="#">Terms and conditions</a></li>
+                                    <li><a href="#">Privacy Policy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">My Account</h4>
+
+                                <ul class="widget-list">
+                                    <li><a href="#">Sign In</a></li>
+                                    <li><a href="cart.html">View Cart</a></li>
+                                    <li><a href="#">My Wishlist</a></li>
+                                    <li><a href="#">Track My Order</a></li>
+                                    <li><a href="#">Help</a></li>
+                                </ul>
+                            </div>
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+                    </div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-middle -->
+
+            <div class="footer-bottom">
+                <div class="container">
+                    <p class="footer-copyright">Copyright © 2019 Molla Store. All Rights Reserved.</p> End .
+
+                </div><!-- End .container -->
+            </div><!-- End .footer-bottom -->
+        </footer><!-- End .footer -->
+    </div><!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+    <div class="mobile-menu-container">
+        <div class="mobile-menu-wrapper">
+            <span class="mobile-menu-close"><i class="icon-close"></i></span>
+
+            <form action="#" method="get" class="mobile-search">
+                <label for="mobile-search" class="sr-only">Search</label>
+                <input type="search" class="form-control" name="mobile-search" id="mobile-search"
+                    placeholder="Search in..." required>
+                <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+            </form>
+
+
+
+            <!-- <div class="social-icons">
+ <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+ <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+ <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+ <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+ </div> -->
+        </div>
+    </div>
+
+    <div class="modal fade" id="signin-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="icon-close"></i></span>
+                    </button>
+
+                    <div class="form-box">
+                        <div class="form-tab">
+                            <ul class="nav nav-pills nav-fill" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="signin-tab" data-toggle="tab" href="#signin"
+                                        role="tab" aria-controls="signin" aria-selected="true">Sign In</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab"
+                                        aria-controls="register" aria-selected="false">Register</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="tab-content-5">
+                                <div class="tab-pane fade show active" id="signin" role="tabpanel"
+                                    aria-labelledby="signin-tab">
+                                    <form action="#">
+                                        <div class="form-group">
+                                            <label for="singin-email">Username or email address *</label>
+                                            <input type="text" class="form-control" id="singin-email"
+                                                name="singin-email" required>
+                                        </div><!-- End .form-group -->
+
+                                        <div class="form-group">
+                                            <label for="singin-password">Password *</label>
+                                            <input type="password" class="form-control" id="singin-password"
+                                                name="singin-password" required>
+                                        </div><!-- End .form-group -->
+
+                                        <div class="form-footer">
+                                            <button type="submit" class="btn btn-outline-primary-2">
+                                                <span>LOG IN</span>
+                                                <i class="icon-long-arrow-right"></i>
+                                            </button>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input"
+                                                    id="signin-remember">
+                                                <label class="custom-control-label" for="signin-remember">Remember
+                                                    Me</label>
+                                            </div><!-- End .custom-checkbox -->
+
+                                            <a href="#" class="forgot-link">Forgot Your Password?</a>
+                                        </div><!-- End .form-footer -->
+                                    </form>
+                                    <div class="form-choice">
+                                        <p class="text-center">or sign in with</p>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <a href="#" class="btn btn-login btn-g">
+                                                    <i class="icon-google"></i>
+                                                    Login With Google
+                                                </a>
+                                            </div><!-- End .col-6 -->
+                                            <div class="col-sm-6">
+                                                <a href="#" class="btn btn-login btn-f">
+                                                    <i class="icon-facebook-f"></i>
+                                                    Login With Facebook
+                                                </a>
+                                            </div><!-- End .col-6 -->
+                                        </div><!-- End .row -->
+                                    </div><!-- End .form-choice -->
+                                </div><!-- .End .tab-pane -->
+                                <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+                                    <form action="#">
+                                        <div class="form-group">
+                                            <label for="register-email">Your email address *</label>
+                                            <input type="email" class="form-control" id="register-email"
+                                                name="register-email" required>
+                                        </div><!-- End .form-group -->
+
+                                        <div class="form-group">
+                                            <label for="register-password">Password *</label>
+                                            <input type="password" class="form-control" id="register-password"
+                                                name="register-password" required>
+                                        </div><!-- End .form-group -->
+
+                                        <div class="form-footer">
+                                            <button type="submit" class="btn btn-outline-primary-2">
+                                                <span>SIGN UP</span>
+                                                <i class="icon-long-arrow-right"></i>
+                                            </button>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="register-policy"
+                                                    required>
+                                                <label class="custom-control-label" for="register-policy">I agree to the
+                                                    <a href="#">privacy policy</a> *</label>
+                                            </div><!-- End .custom-checkbox -->
+                                        </div><!-- End .form-footer -->
+                                    </form>
+                                    <div class="form-choice">
+                                        <p class="text-center">or sign in with</p>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <a href="#" class="btn btn-login btn-g">
+                                                    <i class="icon-google"></i>
+                                                    Login With Google
+                                                </a>
+                                            </div><!-- End .col-6 -->
+                                            <div class="col-sm-6">
+                                                <a href="#" class="btn btn-login btn-f">
+                                                    <i class="icon-facebook-f"></i>
+                                                    Login With Facebook
+                                                </a>
+                                            </div><!-- End .col-6 -->
+                                        </div><!-- End .row -->
+                                    </div><!-- End .form-choice -->
+                                </div><!-- .End .tab-pane -->
+                            </div><!-- End .tab-content -->
+                        </div><!-- End .form-tab -->
+                    </div><!-- End .form-box -->
+                </div><!-- End .modal-body -->
+            </div><!-- End .modal-content -->
+        </div><!-- End .modal-dialog -->
+    </div><!-- End .modal -->
+
+    <!-- <div class="container newsletter-popup-container mfp-hide" id="newsletter-popup-form">
+ <div class="row justify-content-center">
+ <div class="col-10">
+ <div class="row no-gutters bg-white newsletter-popup-content">
+ <div class="col-xl-3-5col col-lg-7 banner-content-wrap">
+ <div class="banner-content text-center">
+ <img src="{% static 'assets/images/popup/newsletter/logo.png' %}" class="logo" alt="logo" width="60" height="15">
+ <h2 class="banner-title">get <span>25<light>%</light></span> off</h2>
+ <p>Subscribe to the Molla eCommerce newsletter to receive timely updates from your favorite products.</p> -->
+    <!-- <form action="#">
+ <div class="input-group input-group-round">
+ <input type="email" class="form-control form-control-white" placeholder="Your Email Address" aria-label="Email Adress" required>
+ <div class="input-group-append">
+ <button class="btn" type="submit"><span>go</span></button>
+ </div>
+ </div> -->
+    <!-- </form>
+ <div class="custom-control custom-checkbox">
+ <input type="checkbox" class="custom-control-input" id="register-policy-2" required>
+ <label class="custom-control-label" for="register-policy-2">Do not show this popup again</label> -->
+    <!-- </div>
+ </div>
+ </div>
+ <div class="col-xl-2-5col col-lg-5 ">
+ <img src="{% static 'assets/images/popup/newsletter/img-1.jpg' %}" class="newsletter-img" alt="newsletter">
+ </div> -->
+    <!-- </div>
+ </div>
+ </div>
+ </div> -->
+    <!-- Plugins JS File -->
+    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.hoverIntent.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'assets/js/superfish.min.js' %}"></script>
+    <script src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap-input-spinner.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.magnific-popup.min.js' %}"></script>
+    <!-- Main JS File -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    <script src="{% static 'assets/js/demos/demo-18.js' %}"></script>
+
+
+
+
+</body>
+
+
+<!-- molla/index-18.html 22 Nov 2019 10:00:57 GMT -->
+
+</html>
