@@ -314,47 +314,33 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
+                                            <!-- <tr>
                                                 <td><a href="#">Beige knitted elastic runner shoes</a></td>
                                                 <td>$84.00</td>
-                                            </tr>
-                                            <tr>
+                                            </tr> -->
+                                            <!-- <tr>
                                                 <td><a href="#">Blue utility pinafore denim dress</a></td>
                                                 <td>$76.00</td>
-                                            </tr>
-                                            <tr class="summary-subtotal">
-                                                <td>Subtotal:</td>
-                                                <td>$160.00</td>
-                                            </tr><!-- End .summary-subtotal -->
-                                            <tr>
-                                                <td>Shipping:</td>
-                                                <td>Free shipping</td>
-                                            </tr>
+                                            </tr> -->
                                             <tr class="summary-total">
                                                 <td>Total:</td>
-                                                <td>$160.00</td>
+                                                <td>${{ total_price|floatformat:2 }}</td>
+                                            </tr><!-- End .summary-total -->
+                                            <!-- <tr>
+                                                <td>Shipping:</td>
+                                                <td>Free shipping</td>
+                                            </tr> -->
+                                            <tr class="summary-total">
+                                                <td>Total:</td>
+                                                <td>${{ total_price|floatformat:2 }}</td>
                                             </tr><!-- End .summary-total -->
                                         </tbody>
                                     </table><!-- End .table table-summary -->
 
                                     <div class="accordion-summary" id="accordion-payment">
                                         <div class="card">
-                                            <div class="card-header" id="heading-1">
-                                                <h2 class="card-title">
-                                                    <a role="button" data-toggle="collapse" href="#collapse-1"
-                                                        aria-expanded="true" aria-controls="collapse-1">
-                                                        Direct bank transfer
-                                                    </a>
-                                                </h2>
-                                            </div><!-- End .card-header -->
-                                            <div id="collapse-1" class="collapse show" aria-labelledby="heading-1"
-                                                data-parent="#accordion-payment">
-                                                <div class="card-body">
-                                                    Make your payment directly into our bank account. Please use your
-                                                    Order ID as the payment reference. Your order will not be shipped
-                                                    until the funds have cleared in our account.
-                                                </div><!-- End .card-body -->
-                                            </div><!-- End .collapse -->
+                                            
+                                            
                                         </div><!-- End .card -->
 
                                         <div class="card">
@@ -401,8 +387,7 @@
                                                     <a class="collapsed" role="button" data-toggle="collapse"
                                                         href="#collapse-4" aria-expanded="false"
                                                         aria-controls="collapse-4">
-                                                        PayPal <small class="float-right paypal-link">What is
-                                                            PayPal?</small>
+                                                        PayPal 
                                                     </a>
                                                 </h2>
                                             </div><!-- End .card-header -->
