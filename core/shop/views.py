@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from product_side.models import Product,Category,Cart,CartItem
+from product_side.models import Product,Category,Cart,CartItem,Order,OrderItem
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.http import JsonResponse
 from user_side.models import Address
+from django.utils import timezone
 
 
 
@@ -110,3 +111,56 @@ def checkout(request):
     cart_items = Cart.objects.filter(user=user)
     total_price = sum(item.product.price * item.quantity for item in cart_items)
     return render(request, 'checkout.html',{'user_addresses':user_addresses, 'total_price' : total_price})
+
+
+
+@login_required
+def place_order(request):
+    if request.method == 'POST':
+        selected_address_id = request.POST.get('selected_address')
+        if not selected_address_id:
+            return redirect('checkout')  # Redirect back if no address is selected
+
+        address = Address.objects.get(id=selected_address_id)
+        cart_items = Cart.objects.filter(user=request.user)
+        total_price = sum(item.product.price * item.quantity for item in cart_items)
+
+        # Create Order
+        order = Order.objects.create(
+            user=request.user,
+            address=address,
+            payment_method='COD',
+            total_price=total_price,
+            created_at=timezone.now(),
+            status='Pending'
+        )
+
+        # Create Order Items
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity
+            )
+            # Reduce stock
+            item.product.stock -= item.quantity
+            item.product.save()
+
+        # Clear the cart
+        cart_items.delete()
+
+        return redirect('order_success', order_id=order.id)
+
+    return redirect('checkout')
+
+
+
+def order_success(request, order_id):
+    return render(request, 'order_success.html', {'order_id': order_id})
+
+
+
+@login_required
+def list_orders(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'list_orders.html', {'orders': orders})
