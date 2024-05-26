@@ -119,13 +119,13 @@ def place_order(request):
     if request.method == 'POST':
         selected_address_id = request.POST.get('selected_address')
         if not selected_address_id:
-            return redirect('checkout')  # Redirect back if no address is selected
+            return redirect('checkout') 
 
         address = Address.objects.get(id=selected_address_id)
         cart_items = Cart.objects.filter(user=request.user)
         total_price = sum(item.product.price * item.quantity for item in cart_items)
 
-        # Create Order
+        
         order = Order.objects.create(
             user=request.user,
             address=address,
@@ -135,18 +135,17 @@ def place_order(request):
             status='Pending'
         )
 
-        # Create Order Items
         for item in cart_items:
             OrderItem.objects.create(
                 order=order,
                 product=item.product,
                 quantity=item.quantity
             )
-            # Reduce stock
+  
             item.product.stock -= item.quantity
             item.product.save()
 
-        # Clear the cart
+
         cart_items.delete()
 
         return redirect('order_success', order_id=order.id)

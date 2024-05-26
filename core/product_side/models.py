@@ -28,10 +28,11 @@ class Product(models.Model):
     image2 = models.ImageField(upload_to="img/",blank=True, null=True)
     image3 = models.ImageField(upload_to="img/",blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    stock = models.IntegerField(default=0)
+    stock = models.PositiveIntegerField(default=0)
     is_listed = models.BooleanField(default=True)
     category = models.ForeignKey(Category,null=True, on_delete=models.CASCADE)
     max_quantity = models.PositiveIntegerField(default=5)
+    
     
 
     def __str__(self):
