@@ -165,55 +165,70 @@
                                                     <a href="{% url 'product_details' product.id %}?image_url={{ product.image.url }}">
                                                         <img src="{{ product.image.url }}" alt="Product image" class="product-image">
                                                     </a>
-                                                    
                                                     <div class="product-action-vertical">
                                                         <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
                                                         <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
-                                                    </div><!-- End .product-action-vertical -->
-                            
+                                                    </div>
                                                     <!-- Form to add product to cart -->
-                                                    <form method="post" class="product-action" action="{% url 'add_to_cart' product.id %}">
+                                                    <form method="post" class="product-action add-to-cart-form" action="{% url 'add_to_cart' product.id %}">
                                                         {% csrf_token %}
                                                         <button type="submit" class="btn btn-primary" style="width:100%;">Add to Cart</button>
                                                     </form>
-                                                </figure><!-- End .product-media -->
-                            
+                                                </figure>
                                                 <div class="product-body">
                                                     <div class="product-cat">
                                                         <a href="#">Clothing</a>
-                                                    </div><!-- End .product-cat -->
-                                                    <h3 class="product-title"><a href="product.html">{{ product.name }}</a></h3>
-                                                    <!-- End .product-title -->
+                                                    </div>
+                                                    <h3 class="product-title"><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></h3>
                                                     <div class="product-price">
                                                         {{ product.price }}
-                                                    </div><!-- End .product-price -->
-                                                    
-                                                </div><!-- End .product-body -->
-                            
-                                                <!-- Display stock quantity -->
+                                                    </div>
+                                                </div>
                                                 <div class="product-stock">
                                                     Stock: {{ product.stock }}
                                                     {% if product.cart_quantity > 5 %}
-                                                    <p class="error-message">Maximum 5 products allowed per person.</p>
+                                                        <p class="error-message">Maximum 5 products allowed per person.</p>
                                                     {% endif %}
-                                                </div><!-- End .product-stock -->
-                                            </div><!-- End .product -->
-                                        </div><!-- End .col-sm-6 col-md-4 -->
+                                                </div>
+                                            </div>
+                                        </div>
                                     {% endif %}
                                 {% endfor %}
-                            </div><!-- End .row -->
-                            
-                            
-                            
-
-
-
+                            </div>
                             <div class="more-container text-center mt-0 mb-0">
                                 <a href="/all_products/" class="btn btn-outline-primary-2 btn-more">
                                     <span>View more Products</span>
                                 </a>
-                            </div><!-- End .more-container -->
-                        </div><!-- End .products -->
+                            </div>
+                        </div>
+                        
+                        <!-- Add jQuery and AJAX handling script -->
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                        <script>
+                            $(document).ready(function(){
+                                $('.add-to-cart-form').on('submit', function(e){
+                                    e.preventDefault();
+                                    var $form = $(this);
+                                    $.ajax({
+                                        type: $form.attr('method'),
+                                        url: $form.attr('action'),
+                                        data: $form.serialize(),
+                                        success: function(response){
+                                            if(response.success){
+                                                alert(response.message);
+                                            } else {
+                                                alert(response.message);
+                                            }
+                                        },
+                                        error: function(){
+                                            alert('An error occurred. Please try again.');
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+                        
+                        
                     </div><!-- End .col-lg-9 -->
 
                 </div><!-- End .row -->

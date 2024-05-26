@@ -68,27 +68,36 @@ def add_to_cart(request, product_id):
     if request.method == 'POST':
         user = request.user
         product = get_object_or_404(Product, id=product_id)
+        response_data = {}
         
         if product.stock > 0:
             cart_item, created = Cart.objects.get_or_create(user=user, product=product)
             if not created:
-                if cart_item.quantity < 5:
+                if cart_item.quantity < product.stock:
                     cart_item.quantity += 1
                     cart_item.save()
-                    messages.success(request, "Product added to cart.")
+                    response_data['message'] = "Product added to cart."
+                    response_data['success'] = True
                 else:
-                    messages.error(request, "Maximum 5 products allowed per person.")
+                    response_data['message'] = "No more products left."
+                    response_data['success'] = False
             else:
                 cart_item.quantity = 1
                 cart_item.save()
-                messages.success(request, "Product added to cart.")
+                response_data['message'] = "Product added to cart."
+                response_data['success'] = True
         else:
-            messages.error(request, "Product is out of stock.")
+            response_data['message'] = "Product is out of stock."
+            response_data['success'] = False
         
-    return redirect('cart')
-
-
-
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse(response_data)
+        else:
+            if response_data['success']:
+                messages.success(request, response_data['message'])
+            else:
+                messages.error(request, response_data['message'])
+            return redirect('cart')
 
 def list_cart(request):
     user = request.user
