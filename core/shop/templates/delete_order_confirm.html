@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Delete Order</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 2rem 3rem;
+            margin-top: 5rem;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #333333;
+            text-align: center;
+        }
+        p {
+            font-size: 1.2rem;
+            color: #666666;
+            text-align: center;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+            margin: 0 0.5rem;
+            width: 150px;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-danger-custom {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white;
+            margin: 0 0.5rem;
+            width: 150px;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn-danger-custom:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Confirm Delete Order</h1>
+    <p>Are you sure you want to delete order ID <strong>{{ order.id }}</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="btn-container">
+            <a href="{% url 'list_orders' %}" class="btn btn-custom">Cancel</a>
+            <button type="submit" class="btn btn-danger-custom">Delete</button>
+        </div>
+    </form>
+</div>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

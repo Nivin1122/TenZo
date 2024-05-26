@@ -164,3 +164,13 @@ def order_success(request, order_id):
 def list_orders(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'list_orders.html', {'orders': orders})
+
+
+
+@login_required
+def delete_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    if request.method == 'POST':
+        order.delete()
+        return redirect('list_orders')
+    return render(request, 'delete_order_confirm.html', {'order': order})

@@ -54,6 +54,36 @@
         .table td {
             padding: 1rem;
         }
+        .btn-custom {
+            background-color: #5cb85c;
+            border-color: #4cae4c;
+            color: white;
+            display: block;
+            width: 200px;
+            margin: 2rem auto;
+            text-align: center;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn-custom:hover {
+            background-color: #4cae4c;
+            border-color: #4cae4c;
+            color: white;
+        }
+        .btn-danger-custom {
+            background-color: #d9534f;
+            border-color: #d43f3a;
+            color: white;
+            padding: 0.375rem 0.75rem;
+            text-decoration: none;
+        }
+        .btn-danger-custom:hover {
+            background-color: #c9302c;
+            border-color: #ac2925;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -68,6 +98,7 @@
                 <th>Date</th>
                 <th>Total Price</th>
                 <th>Status</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -77,11 +108,14 @@
                     <td>{{ order.created_at|date:"d M Y H:i" }}</td>
                     <td>${{ order.total_price|floatformat:2 }}</td>
                     <td>{{ order.status }}</td>
-     
+                    <td>
+                        <a href="{% url 'delete_order' order.id %}" class="btn btn-danger-custom">Delete</a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    <a href="{% url 'index' %}" class="btn btn-custom">Back to Home</a>
 </div>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 </body>

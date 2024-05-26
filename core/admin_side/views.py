@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import HttpResponse
 from user_side.models import Customuser
-from product_side.models import Category,Product
+from product_side.models import Category,Product,Order
 
 
 
@@ -234,3 +234,27 @@ def adding_admin_products(request):
 
 
     return render(request,'adding_admin_products.html',context)
+
+
+
+def admin_order_list(request):
+    orders = Order.objects.all()
+    return render(request, 'admin_order_list.html', {'orders': orders})
+
+
+
+# def admin_delete_order(request, order_id):
+#     order = get_object_or_404(Order, id=order_id)
+#     if request.method == 'POST':
+#         order.delete()
+#         return redirect('admin_order_list')
+#     return render(request, 'admin_confirm_delete.html', {'order': order})
+
+
+
+def delete_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if request.method == 'POST':
+        order.delete()
+        return redirect('admin_order_list')
+    return render(request, 'admin_confirm_delete.html', {'order': order})
