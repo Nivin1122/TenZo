@@ -23,34 +23,44 @@ def index(request):
 
 
 
+@login_required
 def all_products(request):
     query = request.GET.get('q')
-    products = Product.objects.filter(is_listed=True)
+    products = Product.objects.filter(is_listed=True, stock__gt=0) 
     categories = Category.objects.filter(is_listed=True)
- 
+
     if query:
-        products = products.filter(
-            Q(name__icontains=query)
-        )
+        products = products.filter(Q(name__icontains=query))
 
     sort_by = request.GET.get('sortby')
     if sort_by == 'low_to_high':
-        products = Product.objects.filter(is_listed=True).order_by('price')
+        products = products.order_by('price')
     elif sort_by == 'high_to_low':
-        products = Product.objects.filter(is_listed=True).order_by('-price')
+        products = products.order_by('-price')
 
-    else:
-        products = Product.objects.filter(is_listed=True)
-
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        response_data = {
+            'products': [
+                {
+                    'id': product.id,
+                    'name': product.name,
+                    'price': product.price,
+                    'stock': product.stock,
+                    'image_url': product.image.url,
+                    'category': product.category.name,
+                }
+                for product in products
+            ]
+        }
+        return JsonResponse(response_data)
 
     context = {
-        'products': products, 
+        'products': products,
         'categories': categories,
-        'query' : query,
+        'query': query,
         'sort_by': sort_by
     }
     return render(request, 'all_products.html', context)
-
 
 
 def product_details(request, id):
@@ -98,6 +108,7 @@ def add_to_cart(request, product_id):
             else:
                 messages.error(request, response_data['message'])
             return redirect('cart')
+
 
 def list_cart(request):
     user = request.user

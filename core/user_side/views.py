@@ -38,7 +38,7 @@ def user_login(request):
 
 def user_out(request):
     logout(request)
-    return redirect("/user_login")
+    return redirect("/")
 
 
 @never_cache

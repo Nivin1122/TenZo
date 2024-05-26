@@ -241,54 +241,133 @@
 
                             <div class="products mb-3">
 
-                                <div class="row justify-content-center">
-                                    {% for product in products %}
-                                    <div class="col-6 col-md-4 col-lg-4">
-
-                                        <div class="product product-7 text-center">
-                                            <figure class="product-media">
-                                                <a href="{% url 'product_details' product.id %}">
-                                                    <img src="{{ product.image.url }}" alt="Product image"
-                                                        class="product-image">
-                                                </a>
-
-                                                <div class="product-action-vertical">
-                                                    <a href="#"
-                                                        class="btn-product-icon btn-wishlist btn-expandable"><span>add
-                                                            to wishlist</span></a>
-                                                    <a href="popup/quickView.html"
-                                                        class="btn-product-icon btn-quickview"
-                                                        title="Quick view"><span>Quick view</span></a>
-                                                    <a href="#" class="btn-product-icon btn-compare"
-                                                        title="Compare"><span>Compare</span></a>
-                                                </div><!-- End .product-action-vertical -->
-
-                                                <form method="post" class="product-action"
-                                                    action="{% url 'add_to_cart' product.id %}">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-primary"
-                                                        style="width: 100%;">Add to Cart</button>
-                                                </form>
-                                            </figure><!-- End .product-media -->
-
-                                            <div class="product-body">
-                                                <div class="product-cat">
-                                                    <a href="#">Dress</a>
-                                                </div><!-- End .product-cat -->
-                                                <h3 class="product-title"><a href="product.html">{{ product.name }}</a>
-                                                </h3><!-- End .product-title -->
-                                                <div class="product-price">
-                                                    {{ product.price }}
-                                                </div><!-- End .product-price -->
-                                                <!-- End .rating-container -->
-                                            </div><!-- End .product-body -->
-                                        </div><!-- End .product -->
-
-                                    </div><!-- End .col-sm-6 col-lg-4 -->
-                                    {% endfor %}
-
-                                    
-                                </div><!-- End .row -->
+                                <div class="products-container mb-7">
+                                    <div class="row justify-content-center">
+                                        {% for product in products %}
+                                            <div class="col-6 col-md-4 col-lg-4">
+                                                <div class="product product-7 text-center">
+                                                    <figure class="product-media">
+                                                        <a href="{% url 'product_details' product.id %}">
+                                                            <img src="{{ product.image.url }}" alt="Product image" class="product-image">
+                                                        </a>
+                                                        <div class="product-action-vertical">
+                                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
+                                                            <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
+                                                        </div>
+                                                        <form method="post" class="product-action add-to-cart-form" action="{% url 'add_to_cart' product.id %}">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-primary" style="width: 100%;">Add to Cart</button>
+                                                        </form>
+                                                    </figure>
+                                                    <div class="product-body">
+                                                        <div class="product-cat">
+                                                            <a href="#">{{ product.category.name }}</a>
+                                                        </div>
+                                                        <h3 class="product-title"><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></h3>
+                                                        <div class="product-price">
+                                                            {{ product.price }}
+                                                        </div>
+                                                        <div class="product-stock">
+                                                            Stock: {{ product.stock }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="more-container text-center mt-0 mb-0">
+                                        <a href="/all_products/" class="btn btn-outline-primary-2 btn-more">
+                                            <span>View more Products</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <!-- Add jQuery and AJAX handling script -->
+                                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                                <script>
+                                    $(document).ready(function(){
+                                        // Handle add to cart via AJAX
+                                        $('.add-to-cart-form').on('submit', function(e){
+                                            e.preventDefault();
+                                            var $form = $(this);
+                                            $.ajax({
+                                                type: $form.attr('method'),
+                                                url: $form.attr('action'),
+                                                data: $form.serialize(),
+                                                success: function(response){
+                                                    if(response.success){
+                                                        alert(response.message);
+                                                    } else {
+                                                        alert(response.message);
+                                                    }
+                                                },
+                                                error: function(){
+                                                    alert('An error occurred. Please try again.');
+                                                }
+                                            });
+                                        });
+                                
+                                        // Handle sorting via AJAX
+                                        $('#sort-select').on('change', function(){
+                                            var sortBy = $(this).val();
+                                            $.ajax({
+                                                type: 'GET',
+                                                url: window.location.pathname,
+                                                data: {
+                                                    sortby: sortBy,
+                                                    q: $('#search-query').val()
+                                                },
+                                                success: function(response){
+                                                    // Update the product listing with the new sorted products
+                                                    var productsContainer = $('.products-container .row');
+                                                    productsContainer.empty();
+                                                    response.products.forEach(function(product) {
+                                                        var productHtml = `
+                                                            <div class="col-6 col-md-4 col-lg-4">
+                                                                <div class="product product-7 text-center">
+                                                                    <figure class="product-media">
+                                                                        <a href="/product_details/${product.id}">
+                                                                            <img src="${product.image_url}" alt="Product image" class="product-image">
+                                                                        </a>
+                                                                        <div class="product-action-vertical">
+                                                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                                                            <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
+                                                                            <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
+                                                                        </div>
+                                                                        <form method="post" class="product-action add-to-cart-form" action="/add_to_cart/${product.id}">
+                                                                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                                                            <button type="submit" class="btn btn-primary" style="width: 100%;">Add to Cart</button>
+                                                                        </form>
+                                                                    </figure>
+                                                                    <div class="product-body">
+                                                                        <div class="product-cat">
+                                                                            <a href="#">${product.category}</a>
+                                                                        </div>
+                                                                        <h3 class="product-title"><a href="/product_details/${product.id}">${product.name}</a></h3>
+                                                                        <div class="product-price">
+                                                                            ${product.price}
+                                                                        </div>
+                                                                        <div class="product-stock">
+                                                                            Stock: ${product.stock}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        `;
+                                                        productsContainer.append(productHtml);
+                                                    });
+                                                },
+                                                error: function(){
+                                                    alert('An error occurred while sorting. Please try again.');
+                                                }
+                                            });
+                                        });
+                                    });
+                                </script>
+                                
+                                
+                                
 
                             </div><!-- End .products -->
 
