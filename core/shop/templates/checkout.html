@@ -279,13 +279,14 @@
                                                         <p class="mb-1">{{ address.phone_no }}</p>
                                                     </div>
                                                     <div class="col-auto">
-                                                        <input type="radio" name="selected_address" value="{{ address.id }}" class="form-check-input" required>
+                                                        <input type="radio" name="selected_address" value="{{ address.id }}" class="form-check-input" {% if forloop.first %}checked{% endif %} required>
                                                     </div>
                                                 </div>
                                                 {% endfor %}
                                             </div>
                                         </div>
                                     </div>
+                                    
                     
                                     <script>
                                         document.getElementById("selectAddressButton").addEventListener("click", function() {
@@ -328,14 +329,14 @@
                                                 </h2>
                                             </div><!-- End .card-header -->
                                             <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
-                                                <div class="card-body">Quisque volutpat mattis eros. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros.</div><!-- End .card-body -->
+                                                
                                             </div><!-- End .collapse -->
                                         </div><!-- End .card -->
                                     </div><!-- End .accordion -->
                     
                                     <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
                                         <span class="btn-text">Place Order</span>
-                                        <span class="btn-hover-text">Proceed to Checkout</span>
+                                        <span class="btn-hover-text">Place Order</span>
                                     </button>
                                 </aside><!-- End .summary -->
                             </div><!-- End .col-lg-3 -->
