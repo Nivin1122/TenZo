@@ -187,9 +187,9 @@ def list_orders(request):
 
 
 @login_required
-def delete_order(request, order_id):
+def cancel_orders(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    if request.method == 'POST':
-        order.delete()
-        return redirect('list_orders')
-    return render(request, 'delete_order_confirm.html', {'order': order})
+    # if request.method == 'POST':
+    order.delete()
+    return redirect('list_orders')
+# return render(request, 'list_orders.html', {'order': order})
