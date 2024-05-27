@@ -189,10 +189,8 @@ def list_orders(request):
 @login_required
 def cancel_orders(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    # Check if the order status is not already "Canceled"
     if order.status != 'Canceled':
-        # Update the order status to "Canceled"
         order.status = 'Canceled'
         order.save()
-        # Optionally, you can add a success message here
+        
     return redirect('list_orders')
