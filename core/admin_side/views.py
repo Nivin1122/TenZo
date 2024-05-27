@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.http import HttpResponse
 from user_side.models import Customuser
 from product_side.models import Category,Product,Order
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 
 
 
@@ -243,18 +245,20 @@ def admin_order_list(request):
 
 
 
-# def admin_delete_order(request, order_id):
-#     order = get_object_or_404(Order, id=order_id)
-#     if request.method == 'POST':
-#         order.delete()
-#         return redirect('admin_order_list')
-#     return render(request, 'admin_confirm_delete.html', {'order': order})
 
 
 
-def delete_order(request, order_id):
+@login_required
+def update_order_status(request, order_id):
     order = get_object_or_404(Order, id=order_id)
+
     if request.method == 'POST':
-        order.delete()
-        return redirect('admin_order_list')
-    return render(request, 'admin_confirm_delete.html', {'order': order})
+        new_status = request.POST.get('status')
+        if new_status in dict(Order.STATUS_CHOICES).keys():
+            order.status = new_status
+            order.save()
+            return redirect('admin_order_list')
+        else:
+            return HttpResponseForbidden("Invalid status")
+
+    return redirect('admin_order_list')

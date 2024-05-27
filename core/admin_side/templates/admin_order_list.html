@@ -336,28 +336,41 @@
                           <thead>
                               <tr>
                                   <th>ORDER ID</th>
+                                  <th>USER</th>
                                   <th>DATE</th>
                                   <th>TOTAL PRICE</th>
                                   <th>STATUS</th>
-                                  <th>ACTIONN</th>
+                                  <th>ACTION</th>
                               </tr>
                           </thead>
                           <tbody>
                               {% for order in orders %}
-                              <tr>
-                                  <td>{{ order.id }}</td>
-                                  <td>{{ order.created_at|date:"d M Y H:i" }}</td>
-                                  <td>${{ order.total_price|floatformat:2 }}</td>
-                                  <td>{{ order.status }}</td>
-                                  <td>
+                                  <tr>
+
+                                      <td>{{ order.id }}</td>
+                                      <td>{{ order.user.username }}</td>
+                                      <td>{{ order.created_at|date:"d M Y H:i" }}</td>
+                                      <td>${{ order.total_price|floatformat:2 }}</td>
+                                      <td>{{ order.status }}</td>
                                       
-                                      <a href="{% url 'delete_order' order.id %}" class="btn btn-danger-custom" style="background-color: red; border-color: red;">Cancel Order</a>
-                                  </td>
-                              </tr>
+                                      <td>
+                                          <form method="post" action="{% url 'update_order_status' order.id %}">
+                                              {% csrf_token %}
+                                              <select name="status" onchange="this.form.submit()" class="form-control">
+                                                  <option value="Pending" {% if order.status == "Pending" %} selected {% endif %}>Pending</option>
+                                                  <option value="Shipped" {% if order.status == "Shipped" %} selected {% endif %}>Shipped</option>
+                                                  <option value="Delivered" {% if order.status == "Delivered" %} selected {% endif %}>Delivered</option>
+                                                  <option value="Canceled" {% if order.status == "Canceled" %} selected {% endif %}>Canceled</option>
+                                              </select>
+                                          </form>
+                                      </td>
+                                  </tr>
                               {% endfor %}
                           </tbody>
                       </table>
                   </div>
+                  
+                  
                   </div>
                 </div>
               </div>

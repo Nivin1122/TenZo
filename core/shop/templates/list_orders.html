@@ -109,7 +109,9 @@
                     <td>${{ order.total_price|floatformat:2 }}</td>
                     <td>{{ order.status }}</td>
                     <td>
-                        <a href="{% url 'cancel_orders' order.id %}" class="btn btn-danger-custom">Delete</a>
+                        {% if order.status != "Canceled" %}
+                            <a href="{% url 'cancel_orders' order.id %}" class="btn btn-danger-custom">Cancel</a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
