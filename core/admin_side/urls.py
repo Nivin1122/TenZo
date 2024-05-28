@@ -18,5 +18,6 @@ urlpatterns = [
     path('editing_admin_products/<int:category_id>',views.editing_admin_products, name='editing_admin_products'),
 
     path('admin_order_list/', views.admin_order_list, name='admin_order_list'),
-    path('update_order_status/<int:order_id>',views.update_order_status, name = 'update_order_status')
+    path('update_order_status/<int:order_id>',views.update_order_status, name = 'update_order_status'),
+    path('orders/<int:order_id>/', views.order_details_admin, name='order_details_admin'),
 ]

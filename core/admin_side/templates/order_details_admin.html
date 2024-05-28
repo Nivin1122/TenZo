@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #333333;
+            color: #ffffff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        .container {
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .card {
+            margin-bottom: 1.5rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(107, 105, 105, 0.1);
+        }
+        .card-body {
+            padding: 1.5rem;
+        }
+        h1, h2, p {
+            margin: 0.5rem 0;
+        }
+        .list-group-item {
+            border: 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .list-group-item:last-child {
+            border-bottom: 0;
+        }
+        .btn-custom {
+            background-color: #5cb85c;
+            border-color: #4cae4c;
+            color: white;
+            text-align: center;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn-custom:hover {
+            background-color: #4cae4c;
+            border-color: #4cae4c;
+            color: white;
+        }
+        .product-image {
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Order Details</h1>
+</div>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Order ID: {{ order.id }}</h2>
+            <p class="card-text">User: {{ order.user.username }}</p>
+            <p class="card-text">Date: {{ order.created_at|date:"d M Y H:i" }}</p>
+            <p class="card-text">Total Price: ${{ order.total_price|floatformat:2 }}</p>
+            <p class="card-text">Status: {{ order.status }}</p>
+            <p class="card-text">Payment Method: {{ order.payment_method }}</p>
+            <p class="card-text">Address: {{ order.address.street }}, {{ order.address.city }}, {{ order.address.state }}, {{ order.address.zip_code }}</p>
+        </div>
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for item in order.items.all %}
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>{{ item.product.name }}</h5>
+                </div>
+                <div class="col-md-2">
+                    <p>Quantity: {{ item.quantity }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p>Price: ${{ item.product.price|floatformat:2 }}</p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-image">
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="text-center">
+        <a href="{% url 'admin_order_list' %}" class="btn btn-custom">Back to Orders</a>
+    </div>
+</div>
+</body>
+</html>

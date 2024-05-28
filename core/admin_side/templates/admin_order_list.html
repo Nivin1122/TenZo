@@ -341,6 +341,7 @@
                                   <th>TOTAL PRICE</th>
                                   <th>STATUS</th>
                                   <th>ACTION</th>
+                                  <th>DETAILS</th>
                               </tr>
                           </thead>
                           <tbody>
@@ -364,6 +365,9 @@
                                               </select>
                                           </form>
                                       </td>
+                                      <td>
+                                        <a href="{% url 'order_details_admin' order.id %}" class="btn btn-custom">DETAILS</a>
+                                    </td>
                                   </tr>
                               {% endfor %}
                           </tbody>

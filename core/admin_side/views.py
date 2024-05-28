@@ -262,3 +262,10 @@ def update_order_status(request, order_id):
             return HttpResponseForbidden("Invalid status")
 
     return redirect('admin_order_list')
+
+
+
+@login_required
+def order_details_admin(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'order_details_admin.html', {'order': order})
