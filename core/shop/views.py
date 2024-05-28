@@ -194,3 +194,10 @@ def cancel_orders(request, order_id):
         order.save()
         
     return redirect('list_orders')
+
+
+
+@login_required
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'order_detail.html', {'order': order})
