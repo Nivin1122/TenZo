@@ -9,15 +9,17 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f4;
+            background-color: #121212;
+            color: #e0e0e0;
             margin: 0;
             padding: 0;
         }
         .header {
-            background-color: #333333;
+            background-color: #1f1f1f;
             color: #ffffff;
             padding: 1rem 0;
             text-align: center;
+            border-bottom: 1px solid #333333;
         }
         .container {
             padding: 2rem;
@@ -25,9 +27,10 @@
         }
         .card {
             margin-bottom: 1.5rem;
-            border: 1px solid #dee2e6;
+            border: 1px solid #333333;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(107, 105, 105, 0.1);
+            background-color: #1e1e1e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         }
         .card-body {
             padding: 1.5rem;
@@ -36,8 +39,10 @@
             margin: 0.5rem 0;
         }
         .list-group-item {
+            background-color: #1e1e1e;
             border: 0;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid #333333;
+            color: #e0e0e0;
         }
         .list-group-item:last-child {
             border-bottom: 0;
@@ -78,7 +83,7 @@
             <p class="card-text">Total Price: ${{ order.total_price|floatformat:2 }}</p>
             <p class="card-text">Status: {{ order.status }}</p>
             <p class="card-text">Payment Method: {{ order.payment_method }}</p>
-            <p class="card-text">Address: {{ order.address.street }}, {{ order.address.city }}, {{ order.address.state }}, {{ order.address.zip_code }}</p>
+            <p class="card-text">Address: {{ order.address.name }}, {{ order.address.zipcode }}, {{ order.address.country }}, {{ order.address.city }}, {{ order.address.state }}, {{ order.address.street }}, {{ order.address.phone_no }}</p>
         </div>
     </div>
     <ul class="list-group list-group-flush">
