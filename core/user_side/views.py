@@ -12,6 +12,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 import random
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -19,6 +20,7 @@ from datetime import datetime
 # Create your views here.
 @never_cache
 def user_login(request):
+    
     if request.user.is_authenticated:
         return redirect("/")
     if request.method == 'POST':
@@ -26,8 +28,8 @@ def user_login(request):
         password = request.POST.get('pass')
 
         user = authenticate(request, username = username, password = password)
-
-        if user is not None:
+    
+        if user is not None and not user.is_superuser:
             login(request,user)
             return redirect('index')
 
@@ -175,14 +177,25 @@ def profile(request):
 
 
 
+@login_required
 def edit_user_profile(request):
     user = request.user
 
     if request.method == 'POST':
-        user.first_name = request.POST.get('first_name')
-        user.last_name = request.POST.get('last_name')
-        user.username = request.POST.get('username')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        username = request.POST.get('username')
+        
+        if not first_name or not last_name or not username:
+            messages.error(request, 'All fields are required.')
+            return render(request, 'edit_user_profile.html', {'user': user})
+        
+        user.first_name = first_name
+        user.last_name = last_name
+        user.username = username
         user.save()
+        
+        messages.success(request, 'Profile updated successfully.')
         return redirect('profile')
     else:
         return render(request, 'edit_user_profile.html', {'user': user})
@@ -215,7 +228,7 @@ def add_user_address(request):
 
         messages.success(request, 'Address saved successfully.')
 
-        return render(request, 'add_user_address.html', {'success': True}) 
+        return redirect('users_address') 
     
     return render(request, 'add_user_address.html')
 

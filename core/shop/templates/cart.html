@@ -173,7 +173,7 @@
                                             <td class="product-col">
                                                 <div class="product">
                                                     <figure class="product-media">
-                                                        <a href="{{ cart_item.product.get_absolute_url }}">
+                                                        <a href="{% url 'product_details' cart_item.product.id %}" >
                                                             <img src="{{ cart_item.product.image.url }}" alt="Product image">
                                                         </a>
                                                     </figure>
