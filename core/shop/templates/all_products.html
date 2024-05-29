@@ -161,17 +161,20 @@
                                     </div><!-- End .toolbox-info -->
                                 </div><!-- End .toolbox-left -->
 
-                                <div class="toolbox-sort">
-                                    <label for="sortby">Filter Products:</label>
-                                    <div class="select-custom">
-                                        <select name="sortby" id="sortby" class="form-control">
-                                            <option value="">Select Option</option>
-                                            <option value="low_to_high">Sort: Low to High</option>
-                                            <option value="high_to_low">Sort: High to Low</option>
-                                            
-                                        </select>
-                                    </div>
-                                </div><!-- End .toolbox-sort -->
+                                <form method="get" id="product-sort-form">
+                                    <div class="toolbox-sort">
+                                        <label for="sortby">Filter Products:</label>
+                                        <div class="select-custom">
+                                            <select name="sortby" id="sortby" class="form-control" onchange="document.getElementById('product-sort-form').submit();">
+                                                <option value="">Select Option</option>
+                                                <option value="low_to_high" {% if sort_by == 'low_to_high' %}selected{% endif %}>Sort: Low to High</option>
+                                                <option value="high_to_low" {% if sort_by == 'high_to_low' %}selected{% endif %}>Sort: High to Low</option>
+                                                <option value="Aa_to_Zz" {% if sort_by == 'Aa_to_Zz' %}selected{% endif %}>Sort: Aa to Zz</option>
+                                                <option value="Zz_to_Aa" {% if sort_by == 'Zz_to_Aa' %}selected{% endif %}>Sort: Zz to Aa</option>
+                                            </select>
+                                        </div>
+                                    </div><!-- End .toolbox-sort -->
+                                </form>
                                     
                                 <script>
                                     document.getElementById("sortby").addEventListener("change", function() {

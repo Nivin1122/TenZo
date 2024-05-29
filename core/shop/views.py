@@ -14,7 +14,7 @@ from django.utils import timezone
 # Create your views here.
 def index(request):
     
-    products = Product.objects.filter(is_listed=True)
+    products = Product.objects.filter(is_listed=True).order_by('-id')
 
     context = {
         'products' : products
@@ -23,7 +23,7 @@ def index(request):
 
 
 
-@login_required
+
 def all_products(request):
     query = request.GET.get('q')
     products = Product.objects.filter(is_listed=True, stock__gt=0) 
@@ -37,6 +37,10 @@ def all_products(request):
         products = products.order_by('price')
     elif sort_by == 'high_to_low':
         products = products.order_by('-price')
+    elif sort_by == 'Aa_to_Zz':
+        products = products.order_by('name')
+    elif sort_by == 'Zz_to_Aa':
+        products = products.order_by('-name')
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         response_data = {
