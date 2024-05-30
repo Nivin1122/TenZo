@@ -8,6 +8,8 @@ from django.db.models import Q
 from django.http import JsonResponse
 from user_side.models import Address
 from django.utils import timezone
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 
 
@@ -26,21 +28,31 @@ def index(request):
 
 def all_products(request):
     query = request.GET.get('q')
-    products = Product.objects.filter(is_listed=True, stock__gt=0) 
+    products_list = Product.objects.filter(is_listed=True, stock__gt=0)
     categories = Category.objects.filter(is_listed=True)
 
     if query:
-        products = products.filter(Q(name__icontains=query))
+        products_list = products_list.filter(Q(name__icontains=query))
 
     sort_by = request.GET.get('sortby')
     if sort_by == 'low_to_high':
-        products = products.order_by('price')
+        products_list = products_list.order_by('price')
     elif sort_by == 'high_to_low':
-        products = products.order_by('-price')
+        products_list = products_list.order_by('-price')
     elif sort_by == 'Aa_to_Zz':
-        products = products.order_by('name')
+        products_list = products_list.order_by('name')
     elif sort_by == 'Zz_to_Aa':
-        products = products.order_by('-name')
+        products_list = products_list.order_by('-name')
+
+    paginator = Paginator(products_list, 6)
+    page = request.GET.get('page')
+
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         response_data = {
@@ -65,6 +77,7 @@ def all_products(request):
         'sort_by': sort_by
     }
     return render(request, 'all_products.html', context)
+
 
 
 def product_details(request, id):

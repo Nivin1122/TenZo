@@ -278,12 +278,28 @@
                                             </div>
                                         {% endfor %}
                                     </div>
-                                    <div class="more-container text-center mt-0 mb-0">
-                                        <a href="/all_products/" class="btn btn-outline-primary-2 btn-more">
-                                            <span>View more Products</span>
-                                        </a>
-                                    </div>
                                 </div>
+                                
+                                <div class="pagination justify-content-center">
+                                    <ul class="pagination">
+                                        {% if products.has_previous %}
+                                            <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+                                            <li class="page-item"><a class="page-link" href="?page={{ products.previous_page_number }}">Previous</a></li>
+                                        {% endif %}
+                                        {% for i in products.paginator.page_range %}
+                                            {% if products.number == i %}
+                                                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                                            {% else %}
+                                                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if products.has_next %}
+                                            <li class="page-item"><a class="page-link" href="?page={{ products.next_page_number }}">Next</a></li>
+                                            <li class="page-item"><a class="page-link" href="?page={{ products.paginator.num_pages }}">Last &raquo;</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                
                                 
                                 <!-- Add jQuery and AJAX handling script -->
                                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
