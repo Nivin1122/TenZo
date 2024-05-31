@@ -127,18 +127,57 @@ def add_to_cart(request, product_id):
             return redirect('cart')
 
 
+
 def list_cart(request):
     user = request.user
     cart_items = Cart.objects.filter(user=user)
     total_price = sum(item.product.price * item.quantity for item in cart_items)
     return render(request, 'cart.html', {'cart_items': cart_items, 'total_price':total_price})
 
+# def list_cart(request):
+#     user = request.user
+#     cart_items = Cart.objects.filter(user=user)
+#     total_price = sum(item.get_total_price() for item in cart_items)
+#     return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price})
 
 
 def remove_from_cart(request, cart_item_id):
     cart_item = get_object_or_404(Cart, id=cart_item_id)
     cart_item.delete()
     return redirect('cart')
+
+
+
+@login_required
+def increase_quantity(request, cart_item_id):
+    cart_item = get_object_or_404(Cart, id=cart_item_id)
+    if cart_item.quantity < cart_item.product.stock:
+        cart_item.quantity += 1
+        cart_item.save()
+        response = {
+            'quantity': cart_item.quantity,
+            'total_price': cart_item.quantity * cart_item.product.price,
+            'cart_total': sum(item.quantity * item.product.price for item in Cart.objects.filter(user=request.user))
+        }
+    else:
+        response = {'error': 'No more products left in stock.'}
+    return JsonResponse(response)
+
+
+@login_required
+def decrease_quantity(request, cart_item_id):
+    cart_item = get_object_or_404(Cart, id=cart_item_id)
+    if cart_item.quantity > 1:
+        cart_item.quantity -= 1
+        cart_item.save()
+        response = {
+            'quantity': cart_item.quantity,
+            'total_price': cart_item.quantity * cart_item.product.price,
+            'cart_total': sum(item.quantity * item.product.price for item in Cart.objects.filter(user=request.user))
+        }
+    else:
+        response = {'error': 'Quantity cannot be less than 1.'}
+    return JsonResponse(response)
 
 
 

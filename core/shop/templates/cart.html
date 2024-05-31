@@ -169,11 +169,11 @@
                                     </thead>
                                     <tbody>
                                         {% for cart_item in cart_items %}
-                                        <tr>
+                                        <tr id="cart-item-{{ cart_item.id }}">
                                             <td class="product-col">
                                                 <div class="product">
                                                     <figure class="product-media">
-                                                        <a href="{% url 'product_details' cart_item.product.id %}" >
+                                                        <a href="{% url 'product_details' cart_item.product.id %}">
                                                             <img src="{{ cart_item.product.image.url }}" alt="Product image">
                                                         </a>
                                                     </figure>
@@ -183,8 +183,12 @@
                                                 </div>
                                             </td>
                                             <td class="price-col">{{ cart_item.product.price }}</td>
-                                            <td class="quantity-col">{{ cart_item.quantity }}</td>
-                                            <td class="total-col">{{ cart_item.product.price|floatformat:2 }}</td>
+                                            <td class="quantity-col">
+                                                <button class="btn btn-decrease" data-id="{{ cart_item.id }}">-</button>
+                                                <span id="quantity-{{ cart_item.id }}">{{ cart_item.quantity }}</span>
+                                                <button class="btn btn-increase" data-id="{{ cart_item.id }}">+</button>
+                                            </td>
+                                            <td class="total-col" id="total-{{ cart_item.id }}">{{ cart_item.product.price|floatformat:2 }}</td>
                                             <td class="remove-col">
                                                 <a href="{% url 'remove_from_cart' cart_item.id %}">
                                                     <button type="submit" class="btn-remove"><i class="icon-close"></i></button>
@@ -193,6 +197,57 @@
                                         </tr>
                                         {% endfor %}
                                     </tbody>
+                                    <p>Total: <span id="cart-total">{{ total_price|floatformat:2 }}</span></p>
+                                    
+                                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                    <script>
+                                        $(document).ready(function() {
+                                            $('.btn-increase').click(function() {
+                                                let cartItemId = $(this).data('id');
+                                                $.ajax({
+                                                    url: "{% url 'increase_quantity' 0 %}".replace('0', cartItemId),
+                                                    method: 'POST',
+                                                    data: {
+                                                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                                                    },
+                                                    success: function(response) {
+                                                        if (response.error) {
+                                                            alert(response.error);
+                                                        } else {
+                                                            $('#quantity-' + cartItemId).text(response.quantity);
+                                                            $('#total-' + cartItemId).text(response.total_price.toFixed(2));
+                                                            $('#cart-total').text(response.cart_total.toFixed(2));
+                                                        }
+                                                    }
+                                                });
+                                            });
+                                    
+                                            $('.btn-decrease').click(function() {
+                                                let cartItemId = $(this).data('id');
+                                                $.ajax({
+                                                    url: "{% url 'decrease_quantity' 0 %}".replace('0', cartItemId),
+                                                    method: 'POST',
+                                                    data: {
+                                                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                                                    },
+                                                    success: function(response) {
+                                                        if (response.error) {
+                                                            alert(response.error);
+                                                        } else {
+                                                            $('#quantity-' + cartItemId).text(response.quantity);
+                                                            $('#total-' + cartItemId).text(response.total_price.toFixed(2));
+                                                            $('#cart-total').text(response.cart_total.toFixed(2));
+                                                        }
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    </script>
+                                    
+                                    
+                                    
+                                    
+                                    
                                 </table>
                         
                                 <div class="cart-bottom">
