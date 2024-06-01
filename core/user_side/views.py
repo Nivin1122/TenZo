@@ -13,6 +13,8 @@ from django.conf import settings
 import random
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.contrib.auth import update_session_auth_hash
 
 
 
@@ -292,3 +294,5 @@ def delete_address(request, address_id):
 
 
 
+def change_password(request):
+    return render(request, 'change_password.html')
