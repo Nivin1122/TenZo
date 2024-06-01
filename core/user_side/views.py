@@ -15,6 +15,9 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
+from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password
+
 
 
 
@@ -294,5 +297,34 @@ def delete_address(request, address_id):
 
 
 
+@login_required
 def change_password(request):
+    if request.method == 'POST':
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('change_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if new_password != confirm_password:
+            messages.error(request, 'New password and confirm password do not match.', extra_tags='error_confirm_password')
+            return redirect('change_password')
+        
+        user = request.user
+        if not user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect.', extra_tags='error_current_password')
+            return redirect('change_password')
+        
+        try:
+            validate_password(new_password, user)
+        except ValidationError as e:
+            for error in e.messages:
+                messages.error(request, error, extra_tags='error_new_password')
+            return redirect('change_password')
+        
+        user.set_password(new_password)
+        user.save()
+        
+        update_session_auth_hash(request, user)  # Important to keep the user logged in after password change
+        messages.success(request, 'Your password was successfully updated!')
+        return redirect('index')
+    
     return render(request, 'change_password.html')
