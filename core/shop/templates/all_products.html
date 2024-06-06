@@ -253,9 +253,8 @@
                                                             <img src="{{ product.image.url }}" alt="Product image" class="product-image">
                                                         </a>
                                                         <div class="product-action-vertical">
-                                                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                                            <a href="{% url 'add_to_wishlist' product.id %}" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
                                                             <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a>
-                                                            <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a>
                                                         </div>
                                                         <form method="post" class="product-action add-to-cart-form" action="{% url 'add_to_cart' product.id %}">
                                                             {% csrf_token %}
