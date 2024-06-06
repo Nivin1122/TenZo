@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from product_side.models import Product,Category,Cart,CartItem,Order,OrderItem
+from product_side.models import Product,Category,Cart,CartItem,Order,OrderItem,Coupon
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
@@ -128,11 +128,23 @@ def add_to_cart(request, product_id):
 
 
 
+@login_required
 def list_cart(request):
     user = request.user
     cart_items = Cart.objects.filter(user=user)
     total_price = sum(item.product.price * item.quantity for item in cart_items)
-    return render(request, 'cart.html', {'cart_items': cart_items, 'total_price':total_price})
+    
+    coupon_code = request.GET.get('coupon_code')
+    discount = 0
+    if coupon_code:
+        try:
+            coupon = Coupon.objects.get(code=coupon_code, active=True, valid_from__lte=timezone.now(), valid_to__gte=timezone.now())
+            discount = coupon.discount_amount
+            total_price -= discount
+        except Coupon.DoesNotExist:
+            messages.error(request, 'Invalid coupon code or coupon has expired.')
+
+    return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price, 'discount': discount})
 
 # def list_cart(request):
 #     user = request.user

@@ -258,14 +258,25 @@
                         
                                 <div class="cart-bottom">
                                     <div class="cart-discount">
-                                        <form action="#">
+                                        <form action="{% url 'cart' %}" method="get">
                                             <div class="input-group">
-                                                <input type="text" class="form-control" required placeholder="coupon code">
+                                                <input type="text" name="coupon_code" class="form-control" required placeholder="Enter coupon code">
                                                 <div class="input-group-append">
                                                     <button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
                                                 </div><!-- .End .input-group-append -->
                                             </div><!-- End .input-group -->
                                         </form>
+                                        
+                                        {% if discount %}
+                                            <p>Discount: {{ discount }}</p>
+                                        {% endif %}
+                                        <p>Total Price: {{ total_price }}</p>
+                                    
+                                        <ul>
+                                            {% for item in cart_items %}
+                                                <li>{{ item.product.name }} - {{ item.quantity }} x {{ item.product.price }}</li>
+                                            {% endfor %}
+                                        </ul>
                                     </div><!-- End .cart-discount -->
                         
                                     <a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
