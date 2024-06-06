@@ -200,7 +200,7 @@ def place_order(request):
         address = Address.objects.get(id=selected_address_id)
         cart_items = Cart.objects.filter(user=request.user)
         total_price = sum(item.product.price * item.quantity for item in cart_items)
-
+        payment_method = Order
         
         order = Order.objects.create(
             user=request.user,

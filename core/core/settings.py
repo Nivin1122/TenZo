@@ -165,3 +165,9 @@ DEFAULT_FROM_EMAIL = env.get_value("DEFAULT_FROM_EMAIL")
 SESSION_COOKIE_AGE = 3600
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# SECURE_CROSS_ORIGIN_OPENER_POLICY: Sets COOP header to isolate documents and allow popups, enhancing security.
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+
+RAZOR_KEY_ID = os.environ.get('RAZOR_KEY_ID')
+RAZOR_KEY_SECRET = os.environ.get('RAZOR_KEY_SECRET')

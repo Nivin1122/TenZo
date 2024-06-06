@@ -135,103 +135,16 @@
                                 </div><!-- End .header-search-wrapper -->
                             </form>
                         </div><!-- End .header-search -->
-                        <div class="dropdown compare-dropdown">
-                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false" data-display="static"
-                                title="Compare Products" aria-label="Compare Products">
-                                <i class="icon-random"></i>
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <ul class="compare-products">
-                                    <li class="compare-product">
-                                        <a href="#" class="btn-remove" title="Remove Product"><i
-                                                class="icon-close"></i></a>
-                                        <h4 class="compare-product-title"><a href="product.html">Blue Night Dress</a>
-                                        </h4>
-                                    </li>
-                                    <li class="compare-product">
-                                        <a href="#" class="btn-remove" title="Remove Product"><i
-                                                class="icon-close"></i></a>
-                                        <h4 class="compare-product-title"><a href="product.html">White Long Skirt</a>
-                                        </h4>
-                                    </li>
-                                </ul>
-
-                                <div class="compare-actions">
-                                    <a href="#" class="action-link">Clear All</a>
-                                    <a href="#" class="btn btn-outline-primary-2"><span>Compare</span><i
-                                            class="icon-long-arrow-right"></i></a>
-                                </div>
-                            </div><!-- End .dropdown-menu -->
-                        </div><!-- End .compare-dropdown -->
+                        
 
                         <div class="dropdown cart-dropdown">
-                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
+                            <a href="/cart/" class="dropdown-toggle" role="button"
                                 aria-haspopup="true" aria-expanded="false" data-display="static">
                                 <i class="icon-shopping-cart"></i>
-                                <span class="cart-count">2</span>
+                                <!-- <span class="cart-count">2</span> -->
                             </a>
 
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <div class="dropdown-cart-products">
-                                    <div class="product">
-                                        <div class="product-cart-details">
-                                            <h4 class="product-title">
-                                                <a href="product.html">Beige knitted elastic runner shoes</a>
-                                            </h4>
-
-                                            <span class="cart-product-info">
-                                                <span class="cart-product-qty">1</span>
-                                                x $84.00
-                                            </span>
-                                        </div><!-- End .product-cart-details -->
-
-                                        <figure class="product-image-container">
-                                            <a href="product.html" class="product-image">
-                                                <img src="{% static 'assets/images/products/cart/product-1.jpg' %}"
-                                                    alt="product">
-                                            </a>
-                                        </figure>
-                                        <a href="#" class="btn-remove" title="Remove Product"><i
-                                                class="icon-close"></i></a>
-                                    </div><!-- End .product -->
-
-                                    <div class="product">
-                                        <div class="product-cart-details">
-                                            <h4 class="product-title">
-                                                <a href="product.html">Blue utility pinafore denim dress</a>
-                                            </h4>
-
-                                            <span class="cart-product-info">
-                                                <span class="cart-product-qty">1</span>
-                                                x $76.00
-                                            </span>
-                                        </div><!-- End .product-cart-details -->
-
-                                        <figure class="product-image-container">
-                                            <a href="product.html" class="product-image">
-                                                <img src="{% static 'assets/images/products/cart/product-2.jpg' %}"
-                                                    alt="product">
-                                            </a>
-                                        </figure>
-                                        <a href="#" class="btn-remove" title="Remove Product"><i
-                                                class="icon-close"></i></a>
-                                    </div><!-- End .product -->
-                                </div><!-- End .cart-product -->
-
-                                <div class="dropdown-cart-total">
-                                    <span>Total</span>
-
-                                    <span class="cart-total-price">$160.00</span>
-                                </div><!-- End .dropdown-cart-total -->
-
-                                <div class="dropdown-cart-action">
-                                    <a href="cart.html" class="btn btn-primary">View Cart</a>
-                                    <a href="checkout.html" class="btn btn-outline-primary-2"><span>Checkout</span><i
-                                            class="icon-long-arrow-right"></i></a>
-                                </div><!-- End .dropdown-cart-total -->
-                            </div><!-- End .dropdown-menu -->
+                            
                         </div><!-- End .cart-dropdown -->
                     </div><!-- End .header-right -->
                 </div><!-- End .container -->
@@ -261,7 +174,7 @@
                             <!-- Address Form Column -->
                             <div class="col-lg-9">
                                 <h3 class="mb-4">Select Your Address</h3>
-                                <form method="POST" action="{% url 'place_order' %}">
+                                <form method="POST" action="{% url 'place_order' %}" id="pay_form">
                                     {% csrf_token %}
                                     <div class="list-group">
                                         <div class="list-group-item">
@@ -289,24 +202,43 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
-                    
-                                    <script>
-                                        document.getElementById("selectAddressButton").addEventListener("click", function() {
-                                            var addressDiv = document.getElementById("userAddresses");
-                                            if (addressDiv.style.display === "none") {
-                                                addressDiv.style.display = "block";
-                                            } else {
-                                                addressDiv.style.display = "none";
-                                            }
-                                        });
-                                    </script>
+                        
+                                    <!-- Payment Option Table -->
+                                    <div class="col-lg-4">
+                                        <table class="total-table">
+                                            <thead class="total-table-head">
+                                                <tr class="table-total-row">
+                                                    <th>Payment Option</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="total-data">
+                                                    <td>
+                                                        <select name="payment_method" id="paymentMethod">
+                                                            <option value="COD">Cash on Delivery</option>
+                                                            <option value="RAZORPAY">Razorpay</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <div class="cart-buttons">                    
+                                                            <button id="rzp-button" class="cart-btn">Process Order</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="cart-buttons">                    
+                                            <button type="submit" name="pay_with_wallet" class="cart-btn">Pay with Wallet</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div><!-- End .col-lg-9 -->
-                    
+                        
                             <!-- Order Summary Column -->
                             <div class="col-lg-3">
                                 <aside class="summary">
-                                    <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
+                                    <h3 class="summary-title">Your Order</h3>
+                                    <!-- Order summary table -->
                                     <table class="table table-summary">
                                         <thead>
                                             <tr>
@@ -315,36 +247,72 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <!-- Order summary details -->
                                             <tr class="summary-total">
                                                 <td>Total:</td>
                                                 <td>${{ total_price|floatformat:2 }}</td>
-                                            </tr><!-- End .summary-total -->
+                                            </tr>
                                         </tbody>
-                                    </table><!-- End .table table-summary -->
-                                    
-                                    <div class="accordion-summary" id="accordion-payment">
-                                        <div class="card">
-                                            <div class="card-header" id="heading-3">
-                                                <h2 class="card-title">
-                                                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
-                                                        Cash on delivery
-                                                    </a>
-                                                </h2>
-                                            </div><!-- End .card-header -->
-                                            <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
-                                                
-                                            </div><!-- End .collapse -->
-                                        </div><!-- End .card -->
-                                    </div><!-- End .accordion -->
-                    
-                                    <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
-                                        <span class="btn-text">Place Order</span>
-                                        <span class="btn-hover-text">Place Order</span>
-                                    </button>
-                                </aside><!-- End .summary -->
+                                    </table>
+                                </aside>
                             </div><!-- End .col-lg-3 -->
-                        </form>
                         </div><!-- End .row -->
+                        
+                        <!-- Include Razorpay script -->
+                        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+                        <script>
+                            // Razorpay initialization options
+                            var options = {
+                                "key": "rzp_test_gXFJoKE5Scgesz", // Replace with your Razorpay API key
+                                "currency": "INR",
+                                "name": "Your Store Name",
+                                "description": "Order Payment",
+                                "image": "", // Add your store logo image URL
+                                "handler": function(response) {
+                                    // Payment success callback
+                                    document.getElementById('pay_form').submit(); // Submit the form
+                                },
+                                "prefill": {
+                                    "name": "Customer Name",
+                                    "email": "customer@example.com",
+                                    "contact": "Customer Contact Number"
+                                },
+                                "theme": {
+                                    "color": "#3399cc"
+                                }
+                            };
+                        
+                            // Razorpay payment button click event
+                            document.getElementById('rzp-button').addEventListener('click', function(e) {
+                                e.preventDefault();
+                                var paymentMethod = document.getElementById('paymentMethod').value;
+                                if (paymentMethod === "RAZORPAY") {
+                                    // Initialize Razorpay with options
+                                    var rzp = new Razorpay(options);
+                                    // Open Razorpay checkout form
+                                    rzp.open();
+                                } else {
+                                    // Submit the form for other payment methods
+                                    document.getElementById('pay_form').submit();
+                                }
+                            });
+                        </script>
+                        
+                        
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                var selectAddressButton = document.getElementById("selectAddressButton");
+                                var userAddresses = document.getElementById("userAddresses");
+                        
+                                selectAddressButton.addEventListener("click", function() {
+                                    if (userAddresses.style.display === "none") {
+                                        userAddresses.style.display = "block";
+                                    } else {
+                                        userAddresses.style.display = "none";
+                                    }
+                                });
+                            });
+                        </script>                        
                     </div><!-- End .container -->
 
                 </div><!-- End .page-content -->
