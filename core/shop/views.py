@@ -96,7 +96,7 @@ def add_to_cart(request, product_id):
         user = request.user
         product = get_object_or_404(Product, id=product_id)
         response_data = {}
-        
+
         if product.stock > 0:
             cart_item, created = Cart.objects.get_or_create(user=user, product=product)
             if not created:
@@ -116,7 +116,7 @@ def add_to_cart(request, product_id):
         else:
             response_data['message'] = "Product is out of stock."
             response_data['success'] = False
-        
+
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse(response_data)
         else:
@@ -132,7 +132,7 @@ def add_to_cart(request, product_id):
 def list_cart(request):
     user = request.user
     cart_items = Cart.objects.filter(user=user)
-    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    total_price = sum(item.product.get_discounted_price() * item.quantity for item in cart_items)
     
     coupon_code = request.GET.get('coupon_code')
     discount = 0

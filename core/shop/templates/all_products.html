@@ -266,9 +266,12 @@
                                                             <a href="#">{{ product.category.name }}</a>
                                                         </div>
                                                         <h3 class="product-title"><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></h3>
-                                                        <div class="product-price">
-                                                            {{ product.price }}
-                                                        </div>
+                                                        {% if product.offer and product.offer.active %}
+                                            <p>Original Price: <strike>{{ product.price }}</strike></p>
+                                            <p>Discounted Price: {{ product.get_discounted_price }}</p>
+                                            {% else %}
+                                            <p>Price: {{ product.price }}</p>
+                                            {% endif %}
                                                         <div class="product-stock">
                                                             Stock: {{ product.stock }}
                                                         </div>
