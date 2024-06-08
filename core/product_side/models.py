@@ -91,6 +91,7 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     status = models.CharField(max_length=50, default='Pending')
 
+
     STATUS_CHOICES = (
         ('Pending', 'Pending'),
         ('Shipped', 'Shipped'),
@@ -132,6 +133,9 @@ class Wishlist(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s wishlist item: {self.product.name}"
+    
+
+
 
 
 

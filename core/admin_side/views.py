@@ -5,15 +5,29 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import HttpResponse
 from user_side.models import Customuser
-from product_side.models import Category,Product,Order
+from product_side.models import Category,Product,Order,Offer
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
+from django.db.models import Sum,Count
 
 
 
 # Create your views here.
 def admin_home(request):
-    return render(request, 'admin_home.html')
+    overall_sales_count = Order.objects.aggregate(total_sales=Count('total_price'))['total_sales'] or 0
+
+    # Calculate overall discount
+    # overall_discount = Offer.objects.aggregate(total_discount=Sum('discount_amount'))['total_discount'] or 0
+
+    # Calculate overall order amount
+    overall_order_amount = Order.objects.aggregate(total_order_amount=Sum('total_price'))['total_order_amount'] or 0
+
+    return render(request, 'admin_home.html', {
+        'overall_sales_count': overall_sales_count,
+        # 'overall_discount': overall_discount,
+        'overall_order_amount': overall_order_amount
+    })
+    
 
 
 @never_cache
@@ -269,3 +283,6 @@ def update_order_status(request, order_id):
 def order_details_admin(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     return render(request, 'order_details_admin.html', {'order': order})
+
+
+

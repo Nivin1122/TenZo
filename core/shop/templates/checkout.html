@@ -262,9 +262,12 @@
                         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
                         <script>
                             // Razorpay initialization options
+                            var totalAmount = "{{ total_price }}";
                             var options = {
+                            
                                 "key": "rzp_test_gXFJoKE5Scgesz", // Replace with your Razorpay API key
                                 "currency": "INR",
+                                "amount": totalAmount * 100,
                                 "name": "Your Store Name",
                                 "description": "Order Payment",
                                 "image": "", // Add your store logo image URL
