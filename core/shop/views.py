@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from product_side.models import Product,Category,Cart,CartItem,Order,OrderItem,Coupon,Wishlist
+from product_side.models import Product,Category,Cart,CartItem,Order,OrderItem,Coupon,Wishlist,Wallet
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from user_side.models import Address
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from decimal import Decimal
 
 
 
@@ -292,3 +293,31 @@ def remove_from_wishlist(request, product_id):
     return redirect('wishlist')
 
 
+@login_required
+def return_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    if order.status == 'Delivered':
+        order.status = 'Returned'
+        order.save()
+        
+        # Update the wallet balance
+        wallet, created = Wallet.objects.get_or_create(user=request.user)
+        wallet.balance += Decimal(order.total_price)
+        wallet.save()
+        
+    return redirect('list_orders')
+
+
+
+# @login_required
+# def wallet_detail(request):
+#     wallet = get_object_or_404(Wallet, user=request.user)
+#     return render(request, 'wallet_detail.html', {'wallet': wallet})
+@login_required
+def wallet_detail(request):
+    try:
+        wallet = Wallet.objects.get(user=request.user)
+        return render(request, 'wallet_detail.html', {'wallet': wallet})
+    except Wallet.DoesNotExist:
+        wallet_balance = Decimal('0.00')
+        return render(request, 'wallet_detail.html', {'wallet_balance': wallet_balance})

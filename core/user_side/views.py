@@ -323,7 +323,7 @@ def change_password(request):
         user.set_password(new_password)
         user.save()
         
-        update_session_auth_hash(request, user)  # Important to keep the user logged in after password change
+        update_session_auth_hash(request, user) 
         messages.success(request, 'Your password was successfully updated!')
         return redirect('index')
     

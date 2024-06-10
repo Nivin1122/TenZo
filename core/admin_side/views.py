@@ -281,7 +281,7 @@ def update_order_status(request, order_id):
 
 @login_required
 def order_details_admin(request, order_id):
-    order = get_object_or_404(Order, id=order_id, user=request.user)
+    order = get_object_or_404(Order, id=order_id)
     return render(request, 'order_details_admin.html', {'order': order})
 
 

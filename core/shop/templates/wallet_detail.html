@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Profile</title>
+    <title>Wallet</title>
     <meta name="keywords" content="HTML5 Template">
     <meta name="description" content="Molla - Bootstrap eCommerce Template">
     <meta name="author" content="p-themes">
@@ -32,6 +32,30 @@
 </head>
 
 <body>
+    <style>
+        .card-body {
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            margin: 20px auto;
+            background-color: #f8f9fa;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-text, .card-title {
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .card-text {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .card-title {
+            font-size: 2em;
+            color: #007bff;
+        }
+    </style>
     <div class="page-wrapper">
         <header class="header">
             <div class="header-top">
@@ -153,7 +177,7 @@
         <main class="main">
             <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
                 <div class="container">
-                    <h1 class="page-title">Profile<span>Shop</span></h1>
+                    <h1 class="page-title">Wallet<span>Shop</span></h1>
                 </div><!-- End .container -->
             </div><!-- End .page-header -->
             <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
@@ -206,19 +230,28 @@
 
                             <div class="col-md-8 col-lg-9">
                                 <div class="tab-content">
+                                    
                                     <div class="row justify-content-center"> <!-- Centering the form fields -->
                                         <div class="col-sm-6">
-                                            <label for="id_username">Username *</label>
-                                            <input type="text" id="id_username" name="username" class="form-control" value="{{ user.username }}" required>
+                                            <div class="container mb-4" style="padding-right: 1000px;">
+                                                <div class="card">
+                                                    <div class="card-body text-center">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <h1 class="card-text">Your current balance:</h1>
+                                                                {% if wallet %}
+                                                                <h1 class="card-title">${{ wallet.balance }}</h1>
+                                                                {% else %}
+                                                                <h1 class="card-title">$0.00</h1>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="row justify-content-center"> <!-- Centering the form fields -->
-                                        <div class="col-sm-6">
-                                            <label for="email">Email</label>
-                                            <input type="text" id="email" name="email" class="form-control" value="{{ user.email }}"
-                                                required>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
 

@@ -91,16 +91,19 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     status = models.CharField(max_length=50, default='Pending')
 
-
     STATUS_CHOICES = (
         ('Pending', 'Pending'),
         ('Shipped', 'Shipped'),
         ('Delivered', 'Delivered'),
         ('Canceled', 'Canceled'),
+        ('Returned', 'Returned'),
     )
+
+    return_status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
 
     def __str__(self):
         return f"Order {self.id}"
+
 
 
 
@@ -144,3 +147,13 @@ class ProductAdmin(models.Model):
 
 class OfferAdmin(models.Model):
     list_display = ['name', 'discount_percentage', 'valid_from', 'valid_to', 'active']
+
+
+
+
+class Wallet(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
+    def __str__(self):
+        return f"{self.user.username}'s Wallet"

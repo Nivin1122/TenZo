@@ -124,8 +124,10 @@
                     <td>{{ order.status }}</td>
                     
                     <td>
-                        
-                        {% if order.status != "Canceled" %}
+                        {% if order.status == "Delivered" %}
+                            <a href="{% url 'return_order' order.id %}" class="btn btn-warning-custom">Return</a>
+                        {% endif %}
+                        {% if order.status != "Canceled" and order.status != "Returned" %}
                             <a href="{% url 'cancel_orders' order.id %}" class="btn btn-danger-custom">Cancel</a>
                         {% endif %}
                         <a href="{% url 'order_detail' order.id %}" class="btn btn-info-custom">View Details</a>
@@ -133,6 +135,7 @@
                 </tr>
             {% endfor %}
         </tbody>
+        
     </table>
     <a href="{% url 'index' %}" class="btn btn-custom">Back to Home</a>
 </div>
