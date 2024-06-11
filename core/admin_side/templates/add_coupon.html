@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Coupon</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Add Coupon</h4>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="code">Code</label>
+                            <input type="text" class="form-control" id="code" name="code" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="discount_amount">Discount Amount</label>
+                            <input type="number" step="0.01" class="form-control" id="discount_amount" name="discount_amount" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="min_order_amount">Min Order Amount</label>
+                            <input type="number" step="0.01" class="form-control" id="min_order_amount" name="min_order_amount">
+                        </div>
+                        <div class="form-group">
+                            <label for="valid_from">Valid From</label>
+                            <input type="date" class="form-control" id="valid_from" name="valid_from" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="valid_to">Valid To</label>
+                            <input type="date" class="form-control" id="valid_to" name="valid_to" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                        <a href="{% url 'coupon_manage' %}" class="btn btn-secondary">Back</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

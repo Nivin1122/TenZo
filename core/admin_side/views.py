@@ -5,10 +5,11 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import HttpResponse
 from user_side.models import Customuser
-from product_side.models import Category,Product,Order,Offer
+from product_side.models import Category,Product,Order,Offer,Coupon
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.db.models import Sum,Count
+from datetime import datetime
 
 
 
@@ -286,3 +287,32 @@ def order_details_admin(request, order_id):
 
 
 
+@login_required
+def add_coupon(request):
+    if request.method == 'POST':
+        code = request.POST.get('code')
+        discount_amount = request.POST.get('discount_amount')
+        min_order_amount = request.POST.get('min_order_amount')
+        valid_from = request.POST.get('valid_from')
+        valid_to = request.POST.get('valid_to')
+
+        valid_from = datetime.strptime(valid_from, '%Y-%m-%d').date()
+        valid_to = datetime.strptime(valid_to, '%Y-%m-%d').date()
+
+        Coupon.objects.create(
+            code=code,
+            discount_amount=discount_amount,
+            min_order_amount=min_order_amount,
+            valid_from=valid_from,
+            valid_to=valid_to
+        )
+
+        return redirect('coupon_manage')  # Update this with the actual URL name for managing coupons
+
+    return render(request, 'add_coupon.html')
+
+
+@login_required
+def coupon_manage(request):
+    coupons = Coupon.objects.all()
+    return render(request, 'coupon_manage.html', {'coupons': coupons})

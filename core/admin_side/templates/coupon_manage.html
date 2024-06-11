@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Coupons</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Manage Coupons</h2>
+        <a href="{% url 'add_coupon' %}" class="btn btn-primary mb-3">Add Coupon</a>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Discount Amount</th>
+                    <th>Min Order Amount</th>
+                    <th>Valid From</th>
+                    <th>Valid To</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for coupon in coupons %}
+                <tr>
+                    <td>{{ coupon.code }}</td>
+                    <td>${{ coupon.discount_amount }}</td>
+                    <td>${{ coupon.min_order_amount }}</td>
+                    <td>{{ coupon.valid_from|date:"Y-m-d" }}</td>
+                    <td>{{ coupon.valid_to|date:"Y-m-d" }}</td>
+                    <td>
+                        <!-- You can add actions like Edit or Delete here -->
+                        <a href="#" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

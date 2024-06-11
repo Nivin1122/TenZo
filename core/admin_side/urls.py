@@ -20,4 +20,7 @@ urlpatterns = [
     path('admin_order_list/', views.admin_order_list, name='admin_order_list'),
     path('update_order_status/<int:order_id>',views.update_order_status, name = 'update_order_status'),
     path('orders/<int:order_id>/', views.order_details_admin, name='order_details_admin'),
+
+    path('add_coupon/', views.add_coupon, name='add_coupon'),
+    path('coupon_manage/', views.coupon_manage, name='coupon_manage'), 
 ]
