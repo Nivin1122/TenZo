@@ -124,6 +124,7 @@ class Coupon(models.Model):
     valid_from = models.DateTimeField()
     valid_to = models.DateTimeField()
     active = models.BooleanField(default=True)
+    
 
     def __str__(self):
         return self.code

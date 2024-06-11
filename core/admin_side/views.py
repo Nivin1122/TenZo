@@ -316,3 +316,23 @@ def add_coupon(request):
 def coupon_manage(request):
     coupons = Coupon.objects.all()
     return render(request, 'coupon_manage.html', {'coupons': coupons})
+
+
+
+
+@login_required
+def deactivate_coupon(request, coupon_id):
+    coupon = get_object_or_404(Coupon, id=coupon_id)
+    coupon.active = False
+    coupon.save()
+    messages.success(request, f'Coupon {coupon.code} has been deactivated.')
+    return redirect('coupon_manage')
+
+
+@login_required
+def activate_coupon(request, coupon_id):
+    coupon = get_object_or_404(Coupon, id=coupon_id)
+    coupon.active = True
+    coupon.save()
+    messages.success(request, f'Coupon {coupon.code} has been activated.')
+    return redirect('coupon_manage')
