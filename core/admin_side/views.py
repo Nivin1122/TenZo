@@ -10,24 +10,57 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.db.models import Sum,Count
 from datetime import datetime
+from django.utils import timezone
+from reportlab.pdfgen import canvas
 
 
 
 # Create your views here.
 def admin_home(request):
     overall_sales_count = Order.objects.aggregate(total_sales=Count('total_price'))['total_sales'] or 0
-
-    # Calculate overall discount
-    # overall_discount = Offer.objects.aggregate(total_discount=Sum('discount_amount'))['total_discount'] or 0
-
-    # Calculate overall order amount
     overall_order_amount = Order.objects.aggregate(total_order_amount=Sum('total_price'))['total_order_amount'] or 0
 
-    return render(request, 'admin_home.html', {
+    # Sales report logic
+    today = timezone.now()
+    start_date_str = request.GET.get('start_date')
+    end_date_str = request.GET.get('end_date')
+    period = request.GET.get('period', 'month')
+
+    if start_date_str and end_date_str:
+        start_date = timezone.datetime.strptime(start_date_str, "%Y-%m-%d")
+        end_date = timezone.datetime.strptime(end_date_str, "%Y-%m-%d")
+    else:
+        if period == 'day':
+            start_date = today - timezone.timedelta(days=1)
+        elif period == 'week':
+            start_date = today - timezone.timedelta(weeks=1)
+        elif period == 'month':
+            start_date = today - timezone.timedelta(days=30)
+        elif period == 'year':
+            start_date = today - timezone.timedelta(days=365)
+        else:
+            return render(request, 'invalid_period.html')
+
+        end_date = today
+
+    orders = Order.objects.filter(created_at__range=[start_date, end_date])
+
+    total_sales_amount = orders.aggregate(Sum('total_price'))['total_price__sum'] or 0
+    # total_discount_amount = orders.aggregate(Sum('discount_amount'))['discount_amount__sum'] or 0
+    total_sales_count = orders.aggregate(Count('id'))['id__count'] or 0
+
+    context = {
         'overall_sales_count': overall_sales_count,
-        # 'overall_discount': overall_discount,
-        'overall_order_amount': overall_order_amount
-    })
+        'overall_order_amount': overall_order_amount,
+        'total_sales_amount': total_sales_amount,
+        # 'total_discount_amount': total_discount_amount,
+        'total_sales_count': total_sales_count,
+        'start_date': start_date,
+        'end_date': end_date,
+        'period': period,
+    }
+
+    return render(request, 'admin_home.html', context)
     
 
 
@@ -336,3 +369,54 @@ def activate_coupon(request, coupon_id):
     coupon.save()
     messages.success(request, f'Coupon {coupon.code} has been activated.')
     return redirect('coupon_manage')
+
+
+
+@login_required(login_url='/login/')
+def generatePdf(request):
+    today = timezone.now()
+    start_date_str = request.GET.get('start_date')
+    end_date_str = request.GET.get('end_date')
+    period = request.GET.get('period', 'month')
+
+    if start_date_str and end_date_str:
+        # Custom date range provided
+        start_date = timezone.datetime.strptime(start_date_str, "%Y-%m-%d")
+        end_date = timezone.datetime.strptime(end_date_str, "%Y-%m-%d")
+    else:
+        # Use predefined period
+        if period == 'day':
+            start_date = today - timezone.timedelta(days=1)
+        elif period == 'week':
+            start_date = today - timezone.timedelta(weeks=1)
+        elif period == 'month':
+            start_date = today - timezone.timedelta(days=30)
+        elif period == 'year':
+            start_date = today - timezone.timedelta(days=365)
+        else:
+            return render(request, 'invalid_period.html')
+
+        end_date = today
+    
+    orders = Order.objects.filter(created_at__range=[start_date, end_date])
+    
+    total_sales_amount = orders.aggregate(Sum('total_price'))['total_price__sum'] or 0
+    # total_discount_amount = orders.aggregate(Sum('discount_amount'))['discount_amount__sum'] or 0
+    total_sales_count = orders.aggregate(Count('id'))['id__count'] or 0
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="sales_report.pdf"'
+    
+    p = canvas.Canvas(response)
+    
+    # Add information to the PDF
+    p.drawString(100, 800, f"Total Sales Count: {total_sales_count}")
+    p.drawString(100, 780, f"Total Sales Amount: {total_sales_amount}")
+    # p.drawString(100, 760, f"Total Discount Amount: {total_discount_amount}")
+    p.drawString(100, 740, f"Period: {period.capitalize()}")
+
+    # Save the PDF
+    p.showPage()
+    p.save()
+
+    return response

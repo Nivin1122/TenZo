@@ -25,4 +25,6 @@ urlpatterns = [
     path('coupon_manage/', views.coupon_manage, name='coupon_manage'),
     path('deactivate_coupon/<int:coupon_id>/', views.deactivate_coupon, name='deactivate_coupon'),
     path('activate_coupon/<int:coupon_id>/', views.activate_coupon, name='activate_coupon'),
+
+    path('generatePdf/', views.generatePdf, name='generate_pdf'),
 ]

@@ -388,28 +388,29 @@
                       <div class="card-body">
                           <h4 class="card-title">Sales Report</h4>
                           
-                              <div class="form-group mr-3">
-                                  <label for="start_date" class="mr-2">Start Date:</label>
-                                  <input type="date" name="start_date" class="form-control" value="">
-                              </div>
-                              <div class="form-group mr-3">
-                                  <label for="end_date" class="mr-2">End Date:</label>
-                                  <input type="date" name="end_date" class="form-control" value="">
-                              </div>
-                              <h3>OR</h3>
-                              <div class="form-group mr-3">
-                                  <label for="period" class="mr-2">Period:</label>
-                                  <select class="form-control" name="period">
-                                      <option value="day" {% if period == 'day' %}selected{% endif %}>Day</option>
-                                      <option value="week" {% if period == 'week' %}selected{% endif %}>Week</option>
-                                      <option value="month" {% if period == 'month' %}selected{% endif %}>Month</option>
-                                      <option value="year" {% if period == 'year' %}selected{% endif %}>Year</option>
-                                  </select>
-                              </div>
-                              <button type="submit" class="btn btn-primary btn-icon-text">
-                                  <i class="ti-search btn-icon-prepend"></i>Search
-                              </button>
-                          </form>
+                          <form method="get" action="{% url 'admin_home' %}">
+                            <div class="form-group mr-3">
+                                <label for="start_date" class="mr-2">Start Date:</label>
+                                <input type="date" name="start_date" class="form-control" value="">
+                            </div>
+                            <div class="form-group mr-3">
+                                <label for="end_date" class="mr-2">End Date:</label>
+                                <input type="date" name="end_date" class="form-control" value="">
+                            </div>
+                            <h3>OR</h3>
+                            <div class="form-group mr-3">
+                                <label for="period" class="mr-2">Period:</label>
+                                <select class="form-control" name="period">
+                                    <option value="day" {% if period == 'day' %}selected{% endif %}>Day</option>
+                                    <option value="week" {% if period == 'week' %}selected{% endif %}>Week</option>
+                                    <option value="month" {% if period == 'month' %}selected{% endif %}>Month</option>
+                                    <option value="year" {% if period == 'year' %}selected{% endif %}>Year</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-icon-text">
+                                <i class="ti-search btn-icon-prepend"></i>Search
+                            </button>
+                        </form>
                       </div>
                       <div class="table-responsive">
                           <table class="table">
@@ -430,9 +431,9 @@
                           </table>
                       </div>
                       <div class="card-footer">
-                          <a href="/generatepdf/" class="btn btn-primary btn-icon-text btn-rounded">
-                              <i class="ti-print btn-icon-prepend"></i>Print Report
-                          </a>
+                        <a href="/generatePdf/" class="btn btn-primary btn-icon-text btn-rounded">
+                          <i class="ti-print btn-icon-prepend"></i>Print Report
+                      </a>
                       </div>
                   </div>
               </div>
