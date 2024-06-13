@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from product_side.models import Product,Category,Cart,CartItem,Order,OrderItem,Coupon,Wishlist,Wallet
+from product_side.models import Product,Category,Cart,CartItem,Order,OrderItem,Coupon,Wishlist,Wallet,Shipping_address
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
@@ -202,44 +202,102 @@ def checkout(request):
     return render(request, 'checkout.html',{'user_addresses':user_addresses, 'total_price' : total_price})
 
 
-
 @login_required
 def place_order(request):
     if request.method == 'POST':
         selected_address_id = request.POST.get('selected_address')
+        
         if not selected_address_id:
-            return redirect('checkout') 
+            return redirect('checkout')  # Redirect if no address selected
 
-        address = Address.objects.get(id=selected_address_id)
+        try:
+            address = Address.objects.get(id=selected_address_id)
+        except Address.DoesNotExist:
+            return redirect('checkout')  # Redirect if address does not exist
+
+        # Create a corresponding Shipping_address entry
+        shipping_address = Shipping_address.objects.create(
+            street=address.street,
+            city=address.city,
+            state=address.state,
+            zipcode=address.zipcode,
+            country=address.country,
+            user=request.user,
+            name=address.name,
+            phone_no=address.phone_no
+        )
+
+        # Create the order using the selected address
         cart_items = Cart.objects.filter(user=request.user)
         total_price = sum(item.product.price * item.quantity for item in cart_items)
-        payment_method = Order
-        
+
         order = Order.objects.create(
             user=request.user,
-            address=address,
-            payment_method='COD',
+            shipping_address=shipping_address,
+            payment_method='COD',  # Example payment method (you can adjust as needed)
             total_price=total_price,
             created_at=timezone.now(),
             status='Pending'
         )
 
+        # Create OrderItem entries for each item in the cart
         for item in cart_items:
             OrderItem.objects.create(
                 order=order,
                 product=item.product,
                 quantity=item.quantity
             )
-  
+
+            # Update product stock (example assuming you have a stock field in Product model)
             item.product.stock -= item.quantity
             item.product.save()
 
-
+        # Clear the cart after placing the order
         cart_items.delete()
 
+        # Redirect to order success page with the order_id
         return redirect('order_success', order_id=order.id)
 
-    return redirect('checkout')
+    return redirect('checkout')  # Redirect if request method is not POST
+
+
+# @login_required
+# def place_order(request):
+#     if request.method == 'POST':
+#         selected_address_id = request.POST.get('selected_address')
+#         if not selected_address_id:
+#             return redirect('checkout') 
+
+#         address = Address.objects.get(id=selected_address_id)
+#         cart_items = Cart.objects.filter(user=request.user)
+#         total_price = sum(item.product.price * item.quantity for item in cart_items)
+#         payment_method = Order
+        
+#         order = Order.objects.create(
+#             user=request.user,
+#             address=address,
+#             payment_method='COD',
+#             total_price=total_price,
+#             created_at=timezone.now(),
+#             status='Pending'
+#         )
+
+#         for item in cart_items:
+#             OrderItem.objects.create(
+#                 order=order,
+#                 product=item.product,
+#                 quantity=item.quantity
+#             )
+  
+#             item.product.stock -= item.quantity
+#             item.product.save()
+
+
+#         cart_items.delete()
+
+#         return redirect('order_success', order_id=order.id)
+
+#     return redirect('checkout')
 
 
 
