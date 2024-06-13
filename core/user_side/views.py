@@ -26,7 +26,7 @@ from django.contrib.auth.password_validation import validate_password
 @never_cache
 def user_login(request):
     
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and not request.user.is_superuser:
         return redirect("/")
     if request.method == 'POST':
         username = request.POST.get('uname')

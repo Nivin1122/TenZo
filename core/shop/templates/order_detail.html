@@ -85,7 +85,7 @@
             <div class="order-details">
                 <h2 class="card-title">Order ID: {{ order.id }}</h2>
                 <p class="card-text">Date: {{ order.created_at|date:"d M Y H:i" }}</p>
-                <p class="card-text">Total Price: ${{ order.total_price|floatformat:2 }}</p>
+                <p class="card-text">Total Price: ₹{{ order.total_price|floatformat:2 }}</p>
                 <p class="card-text">Status: {{ order.status }}</p>
                 <p class="card-text">Payment Method: {{ order.payment_method }}</p>
             </div>
@@ -112,7 +112,7 @@
                     <p>Quantity: {{ item.quantity }}</p>
                 </div>
                 <div class="col-md-3">
-                    <p>Price: ${{ item.product.price|floatformat:2 }}</p>
+                    <p>Price: ₹{{ item.product.price|floatformat:2 }}</p>
                 </div>
                 <div class="col-md-3">
                     <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-image">

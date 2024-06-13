@@ -206,16 +206,15 @@ def checkout(request):
 def place_order(request):
     if request.method == 'POST':
         selected_address_id = request.POST.get('selected_address')
-        
+        payment_method = request.POST.get('payment_method')
         if not selected_address_id:
-            return redirect('checkout')  # Redirect if no address selected
+            return redirect('checkout') 
 
         try:
             address = Address.objects.get(id=selected_address_id)
         except Address.DoesNotExist:
-            return redirect('checkout')  # Redirect if address does not exist
+            return redirect('checkout') 
 
-        # Create a corresponding Shipping_address entry
         shipping_address = Shipping_address.objects.create(
             street=address.street,
             city=address.city,
@@ -227,20 +226,19 @@ def place_order(request):
             phone_no=address.phone_no
         )
 
-        # Create the order using the selected address
+       
         cart_items = Cart.objects.filter(user=request.user)
         total_price = sum(item.product.price * item.quantity for item in cart_items)
 
         order = Order.objects.create(
             user=request.user,
             shipping_address=shipping_address,
-            payment_method='COD',  # Example payment method (you can adjust as needed)
+            payment_method=payment_method,  
             total_price=total_price,
             created_at=timezone.now(),
             status='Pending'
         )
 
-        # Create OrderItem entries for each item in the cart
         for item in cart_items:
             OrderItem.objects.create(
                 order=order,
@@ -248,17 +246,15 @@ def place_order(request):
                 quantity=item.quantity
             )
 
-            # Update product stock (example assuming you have a stock field in Product model)
+           
             item.product.stock -= item.quantity
             item.product.save()
 
-        # Clear the cart after placing the order
         cart_items.delete()
 
-        # Redirect to order success page with the order_id
         return redirect('order_success', order_id=order.id)
 
-    return redirect('checkout')  # Redirect if request method is not POST
+    return redirect('checkout') 
 
 
 # @login_required
@@ -358,7 +354,6 @@ def return_order(request, order_id):
         order.status = 'Returned'
         order.save()
         
-        # Update the wallet balance
         wallet, created = Wallet.objects.get_or_create(user=request.user)
         wallet.balance += Decimal(order.total_price)
         wallet.save()
@@ -371,6 +366,7 @@ def return_order(request, order_id):
 # def wallet_detail(request):
 #     wallet = get_object_or_404(Wallet, user=request.user)
 #     return render(request, 'wallet_detail.html', {'wallet': wallet})
+
 @login_required
 def wallet_detail(request):
     try:
