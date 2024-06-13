@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assign Offer to Product</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Assign Offer to Product</h2>
+        <form method="post" action="{% url 'assign_offer_to_product' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="product">Product:</label>
+                <select name="product" class="form-control">
+                    {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="offer">Offer:</label>
+                <select name="offer" class="form-control">
+                    {% for offer in offers %}
+                    <option value="{{ offer.id }}">{{ offer.name }} ({{ offer.discount_percentage }}%)</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Assign Offer</button>
+        </form>
+    </div>
+</body>
+</html>

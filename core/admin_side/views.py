@@ -340,7 +340,7 @@ def add_coupon(request):
             valid_to=valid_to
         )
 
-        return redirect('coupon_manage')  # Update this with the actual URL name for managing coupons
+        return redirect('coupon_manage')  
 
     return render(request, 'add_coupon.html')
 
@@ -420,3 +420,107 @@ def generatePdf(request):
     p.save()
 
     return response
+
+
+
+
+def admin_offers(request):
+    overall_sales_count = Order.objects.aggregate(total_sales=Count('total_price'))['total_sales'] or 0
+    overall_order_amount = Order.objects.aggregate(total_order_amount=Sum('total_price'))['total_order_amount'] or 0
+
+    # Sales report logic
+    today = timezone.now()
+    start_date_str = request.GET.get('start_date')
+    end_date_str = request.GET.get('end_date')
+    period = request.GET.get('period', 'month')
+
+    if start_date_str and end_date_str:
+        start_date = timezone.datetime.strptime(start_date_str, "%Y-%m-%d")
+        end_date = timezone.datetime.strptime(end_date_str, "%Y-%m-%d")
+    else:
+        if period == 'day':
+            start_date = today - timezone.timedelta(days=1)
+        elif period == 'week':
+            start_date = today - timezone.timedelta(weeks=1)
+        elif period == 'month':
+            start_date = today - timezone.timedelta(days=30)
+        elif period == 'year':
+            start_date = today - timezone.timedelta(days=365)
+        else:
+            return render(request, 'invalid_period.html')
+
+        end_date = today
+
+    orders = Order.objects.filter(created_at__range=[start_date, end_date])
+
+    total_sales_amount = orders.aggregate(Sum('total_price'))['total_price__sum'] or 0
+    total_sales_count = orders.aggregate(Count('id'))['id__count'] or 0
+
+    offers = Offer.objects.filter(active=True)
+
+    context = {
+        'overall_sales_count': overall_sales_count,
+        'overall_order_amount': overall_order_amount,
+        'total_sales_amount': total_sales_amount,
+        'total_sales_count': total_sales_count,
+        'start_date': start_date,
+        'end_date': end_date,
+        'period': period,
+        'offers': offers,
+    }
+
+    return render(request, 'admin_offers.html', context)
+
+
+
+def add_offer(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        discount_percentage = request.POST.get('discount_percentage')
+        valid_from = request.POST.get('valid_from')
+        valid_to = request.POST.get('valid_to')
+        active = request.POST.get('active') == 'True'
+
+        
+        valid_from = timezone.make_aware(timezone.datetime.strptime(valid_from, '%Y-%m-%dT%H:%M'))
+        valid_to = timezone.make_aware(timezone.datetime.strptime(valid_to, '%Y-%m-%dT%H:%M'))
+
+    
+        offer = Offer(name=name, discount_percentage=discount_percentage, valid_from=valid_from, valid_to=valid_to, active=active)
+        offer.save()
+
+        messages.success(request, 'Offer added successfully!')
+        return redirect('admin_offers') 
+    return render(request, 'add_offer.html')
+
+
+
+@login_required(login_url='/login/')
+def assign_offer_to_product(request):
+    if not request.user.is_superuser:
+        return redirect('admin_home')
+
+    if request.method == 'POST':
+        product_id = request.POST.get('product')
+        offer_id = request.POST.get('offer')
+        
+        try:
+            product = Product.objects.get(id=product_id)
+            offer = Offer.objects.get(id=offer_id)
+            product.offer = offer
+            product.save()
+            return redirect('admin_home')
+        except Product.DoesNotExist:
+            # Handle product not found
+            pass
+        except Offer.DoesNotExist:
+            # Handle offer not found
+            pass
+    
+    products = Product.objects.all()
+    offers = Offer.objects.filter(active=True)
+    
+    return render(request, 'assign_offer_to_product.html', {
+        'products': products,
+        'offers': offers
+    })
