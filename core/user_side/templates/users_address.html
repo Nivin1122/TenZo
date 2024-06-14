@@ -166,65 +166,7 @@
                                 <span class="cart-count">2</span>
                             </a>
 
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <div class="dropdown-cart-products">
-                                    <div class="product">
-                                        <div class="product-cart-details">
-                                            <h4 class="product-title">
-                                                <a href="product.html">Beige knitted elastic runner shoes</a>
-                                            </h4>
-
-                                            <span class="cart-product-info">
-                                                <span class="cart-product-qty">1</span>
-                                                x $84.00
-                                            </span>
-                                        </div><!-- End .product-cart-details -->
-
-                                        <figure class="product-image-container">
-                                            <a href="product.html" class="product-image">
-                                                <img src="{% static 'assets/images/products/cart/product-1.jpg' %}"
-                                                    alt="product">
-                                            </a>
-                                        </figure>
-                                        <a href="#" class="btn-remove" title="Remove Product"><i
-                                                class="icon-close"></i></a>
-                                    </div><!-- End .product -->
-
-                                    <div class="product">
-                                        <div class="product-cart-details">
-                                            <h4 class="product-title">
-                                                <a href="product.html">Blue utility pinafore denim dress</a>
-                                            </h4>
-
-                                            <span class="cart-product-info">
-                                                <span class="cart-product-qty">1</span>
-                                                x $76.00
-                                            </span>
-                                        </div><!-- End .product-cart-details -->
-
-                                        <figure class="product-image-container">
-                                            <a href="product.html" class="product-image">
-                                                <img src="{% static 'assets/images/products/cart/product-2.jpg' %}"
-                                                    alt="product">
-                                            </a>
-                                        </figure>
-                                        <a href="#" class="btn-remove" title="Remove Product"><i
-                                                class="icon-close"></i></a>
-                                    </div><!-- End .product -->
-                                </div><!-- End .cart-product -->
-
-                                <div class="dropdown-cart-total">
-                                    <span>Total</span>
-
-                                    <span class="cart-total-price">$160.00</span>
-                                </div><!-- End .dropdown-cart-total -->
-
-                                <div class="dropdown-cart-action">
-                                    <a href="cart.html" class="btn btn-primary">View Cart</a>
-                                    <a href="checkout.html" class="btn btn-outline-primary-2"><span>Checkout</span><i
-                                            class="icon-long-arrow-right"></i></a>
-                                </div><!-- End .dropdown-cart-total -->
-                            </div><!-- End .dropdown-menu -->
+                            
                         </div><!-- End .cart-dropdown -->
                     </div><!-- End .header-right -->
                 </div><!-- End .container -->
@@ -278,10 +220,23 @@
                                     {% if address %}
                                     <a href="{% url 'edit_address' add.id %}" class="btn btn-primary btn-sm">Edit</a>
                                     {% endif %}
-                                    <form method="post" action="{% url 'delete_address' add.id %}">
+                                    <form method="post" action="{% url 'delete_address' add.id %}" onsubmit="confirmDelete(event)">
                                         {% csrf_token %}
                                         <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</button>
                                     </form>
+
+                                    <script src="{% static 'js/jquery.min.js' %}"></script>
+                                    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+                                    <script>
+                                        function confirmDelete(event) {
+                                            event.preventDefault();  // Prevent the form from submitting
+                                
+                                            if (confirm("Are you sure you want to delete this address?")) {
+                                                event.target.submit();  // If the user confirms, submit the form
+                                            }
+                                        }
+                                    </script>
                                     
                             
                                 </figcaption>

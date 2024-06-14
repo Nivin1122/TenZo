@@ -108,17 +108,14 @@
 
                     <div class="header-right">
                         <div class="header-search">
-                            <a href="#" class="search-toggle" role="button" title="Search"><i
-                                    class="icon-search"></i></a>
-                            <form action="#" method="get">
+                            <a href="#" class="search-toggle" role="button" title="Search"><i class="icon-search"></i></a>
+                            <form action="{% url 'all_products' %}" method="get">
                                 <div class="header-search-wrapper">
                                     <label for="q" class="sr-only">Search</label>
-                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search in..."
-                                        value="{{ query }}" required>
+                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search in..." value="{% if query %}{{ query }}{% else %}{% endif %}" required>
                                 </div><!-- End .header-search-wrapper -->
                             </form>
-                        </div><!-- End .header-search -->
-
+                        </div><!-- End .header-search --> 
 
                         <div class="dropdown cart-dropdown">
                             <a href="/cart/" class="dropdown-toggle" role="button" 
@@ -163,8 +160,10 @@
 
                                 <form method="get" id="product-sort-form">
                                     <div class="toolbox-sort">
+                                        
                                         <label for="sortby">Filter Products:</label>
                                         <div class="select-custom">
+                                            
                                             <select name="sortby" id="sortby" class="form-control" onchange="document.getElementById('product-sort-form').submit();">
                                                 <option value="">Select Option</option>
                                                 <option value="low_to_high" {% if sort_by == 'low_to_high' %}selected{% endif %}>Sort: Low to High</option>
@@ -174,6 +173,7 @@
                                             </select>
                                         </div>
                                     </div><!-- End .toolbox-sort -->
+                                    <input type="hidden" name="q" value="{% if query %}{{ query }}{% else %}{% endif %}">
                                 </form>
                                     
                                 <script>

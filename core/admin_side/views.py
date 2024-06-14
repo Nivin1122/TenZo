@@ -20,7 +20,6 @@ def admin_home(request):
     overall_sales_count = Order.objects.aggregate(total_sales=Count('total_price'))['total_sales'] or 0
     overall_order_amount = Order.objects.aggregate(total_order_amount=Sum('total_price'))['total_order_amount'] or 0
 
-    # Sales report logic
     today = timezone.now()
     start_date_str = request.GET.get('start_date')
     end_date_str = request.GET.get('end_date')
@@ -380,11 +379,11 @@ def generatePdf(request):
     period = request.GET.get('period', 'month')
 
     if start_date_str and end_date_str:
-        # Custom date range provided
+        
         start_date = timezone.datetime.strptime(start_date_str, "%Y-%m-%d")
         end_date = timezone.datetime.strptime(end_date_str, "%Y-%m-%d")
     else:
-        # Use predefined period
+      
         if period == 'day':
             start_date = today - timezone.timedelta(days=1)
         elif period == 'week':
@@ -409,13 +408,11 @@ def generatePdf(request):
     
     p = canvas.Canvas(response)
     
-    # Add information to the PDF
     p.drawString(100, 800, f"Total Sales Count: {total_sales_count}")
     p.drawString(100, 780, f"Total Sales Amount: {total_sales_amount}")
     # p.drawString(100, 760, f"Total Discount Amount: {total_discount_amount}")
     p.drawString(100, 740, f"Period: {period.capitalize()}")
 
-    # Save the PDF
     p.showPage()
     p.save()
 
@@ -511,10 +508,10 @@ def assign_offer_to_product(request):
             product.save()
             return redirect('admin_home')
         except Product.DoesNotExist:
-            # Handle product not found
+        
             pass
         except Offer.DoesNotExist:
-            # Handle offer not found
+       
             pass
     
     products = Product.objects.all()

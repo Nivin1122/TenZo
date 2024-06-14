@@ -6,7 +6,7 @@ from user_side.models import Customuser,Address
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-# from product_side.models import Offer
+
 
 
 
