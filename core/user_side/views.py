@@ -233,7 +233,7 @@ def add_user_address(request):
 
         messages.success(request, 'Address saved successfully.')
 
-        return redirect('users_address') 
+        return redirect('checkout') 
     
     return render(request, 'add_user_address.html')
 

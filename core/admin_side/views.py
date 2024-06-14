@@ -506,7 +506,7 @@ def assign_offer_to_product(request):
             offer = Offer.objects.get(id=offer_id)
             product.offer = offer
             product.save()
-            return redirect('admin_home')
+            return redirect('admin_offers')
         except Product.DoesNotExist:
         
             pass
