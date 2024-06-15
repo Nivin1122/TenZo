@@ -30,6 +30,11 @@
     <!-- Main CSS File -->
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 </head>
+<style>
+    .text-red {
+    color: #ff0000; /* Red color */
+}
+</style>
 
 <body>
     <div class="page-wrapper">
@@ -230,6 +235,16 @@
                                                     </td>
                                                 </tr>
                                             </tbody>
+                                            
+                                            {% if messages %}
+    <div>
+        {% for message in messages %}
+            <div class="alert">
+                <span class="text-red">{{ message }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
                                         </table>
                                         <!-- <div class="cart-buttons">                    
                                             <button type="submit" name="pay_with_wallet" class="cart-btn">Pay with Wallet</button>

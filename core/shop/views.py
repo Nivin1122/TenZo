@@ -213,6 +213,11 @@ def place_order(request):
         try:
             address = Address.objects.get(id=selected_address_id)
         except Address.DoesNotExist:
+            return redirect('checkout')
+        
+        cart_items = Cart.objects.filter(user=request.user)
+        if not cart_items.exists():
+            messages.error(request, "Your cart is empty. Please add at least one product to place an order.")
             return redirect('checkout') 
 
         shipping_address = Shipping_address.objects.create(
@@ -312,9 +317,31 @@ def list_orders(request):
 @login_required
 def cancel_orders(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    if order.status != 'Canceled':
-        order.status = 'Canceled'
-        order.save()
+    
+    # Check if the order is not already canceled and the payment method is COD
+    if order.status != 'Canceled' and order.payment_method == 'COD':
+        # Only add to wallet balance if the order is Delivered
+        if order.status == 'Delivered':
+            try:
+                wallet = Wallet.objects.get(user=request.user)
+                wallet.balance += order.total_price
+                wallet.save()
+            except Wallet.DoesNotExist:
+                # Handle if Wallet does not exist (though ideally, it should exist)
+                pass
+    if order.payment_method == "RAZORPAY":
+        if order.status != 'Canceled':
+            order.status = 'Canceled'
+            order.save()
+
+            wallet = Wallet.objects.get(user=request.user)
+            wallet.balance += order.total_price
+            wallet.save()
+
+        
+    # Mark the order as canceled regardless of payment method
+    order.status = 'Canceled'
+    order.save()
         
     return redirect('list_orders')
 
