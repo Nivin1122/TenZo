@@ -267,8 +267,8 @@
                                                         </div>
                                                         <h3 class="product-title"><a href="{% url 'product_details' product.id %}">{{ product.name }}</a></h3>
                                                         {% if product.offer and product.offer.active %}
-                                            <p>Original Price: <strike>{{ product.price }}</strike></p>
-                                            <p>Discounted Price: {{ product.get_discounted_price }}</p>
+                                            <p>Original Price: ₹<strike>{{ product.price|floatformat:2 }} </strike></p>
+                                            <p>Discounted Price: ₹{{ product.get_discounted_price|floatformat:2 }} </p>
                                             {% else %}
                                             <p>Price: {{ product.price }}</p>
                                             {% endif %}

@@ -175,7 +175,7 @@
 
                                             <td>{% if cart_item.product.offer and cart_item.product.offer.active %}
                                             <p>Original Price: <strike>{{ cart_item.product.price }}</strike></p>
-                                            <p>Discounted Price: {{ cart_item.product.get_discounted_price }}</p>
+                                            <p>Discounted Price: {{ cart_item.product.get_discounted_price|floatformat:2 }}</p>
                                             </td>{% else %}
                                             <p>Price: {{ cart_item.product.price }}</p>
                                             {% endif %}
