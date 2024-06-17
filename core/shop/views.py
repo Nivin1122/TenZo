@@ -45,6 +45,15 @@ def all_products(request):
     elif sort_by == 'Zz_to_Aa':
         products_list = products_list.order_by('-name')
 
+    selected_category = None
+    category_id = request.GET.get('category')
+    if category_id:
+        try:
+            selected_category = Category.objects.get(id=category_id)
+            products_list = products_list.filter(category=selected_category)
+        except Category.DoesNotExist:
+            selected_category = None
+
     paginator = Paginator(products_list, 6)
     page = request.GET.get('page')
 
@@ -75,9 +84,11 @@ def all_products(request):
         'products': products,
         'categories': categories,
         'query': query,
-        'sort_by': sort_by
+        'sort_by': sort_by,
+        'selected_category': selected_category
     }
     return render(request, 'all_products.html', context)
+
 
 
 

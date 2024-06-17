@@ -160,11 +160,9 @@
 
                                 <form method="get" id="product-sort-form">
                                     <div class="toolbox-sort">
-                                        
                                         <label for="sortby">Filter Products:</label>
                                         <div class="select-custom">
-                                            
-                                            <select name="sortby" id="sortby" class="form-control" onchange="document.getElementById('product-sort-form').submit();">
+                                            <select name="sortby" id="sortby" class="form-control">
                                                 <option value="">Select Option</option>
                                                 <option value="low_to_high" {% if sort_by == 'low_to_high' %}selected{% endif %}>Sort: Low to High</option>
                                                 <option value="high_to_low" {% if sort_by == 'high_to_low' %}selected{% endif %}>Sort: High to Low</option>
@@ -173,20 +171,31 @@
                                             </select>
                                         </div>
                                     </div><!-- End .toolbox-sort -->
+                                    
+                                    <div class="toolbox-sort">
+                                        <label for="category">Filter by Category:</label>
+                                        <div class="select-custom">
+                                            <select name="category" id="category" class="form-control">
+                                                <option value="">All Categories</option>
+                                                {% for category in categories %}
+                                                    <option value="{{ category.id }}" {% if selected_category and selected_category.id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div><!-- End .toolbox-sort -->
+                                    
                                     <input type="hidden" name="q" value="{% if query %}{{ query }}{% else %}{% endif %}">
                                 </form>
-                                    
+                                
                                 <script>
                                     document.getElementById("sortby").addEventListener("change", function() {
-                                        var selectedOption = this.options[this.selectedIndex];
-                                        var sortValue = selectedOption.value;
-                                        var baseUrl = "{% url 'all_products' %}";
-                                
-                                        if (sortValue) {
-                                            window.location.href = baseUrl + "?sortby=" + sortValue;
-                                        }
+                                        document.getElementById('product-sort-form').submit();
+                                    });
+                                    document.getElementById("category").addEventListener("change", function() {
+                                        document.getElementById('product-sort-form').submit();
                                     });
                                 </script>
+                                
                                 
                                     
                                     
