@@ -12,6 +12,12 @@ from django.db.models import Sum,Count
 from datetime import datetime
 from django.utils import timezone
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.units import inch
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+
 
 
 
@@ -371,6 +377,7 @@ def activate_coupon(request, coupon_id):
 
 
 
+
 @login_required(login_url='/login/')
 def generatePdf(request):
     today = timezone.now()
@@ -379,11 +386,9 @@ def generatePdf(request):
     period = request.GET.get('period', 'month')
 
     if start_date_str and end_date_str:
-        
         start_date = timezone.datetime.strptime(start_date_str, "%Y-%m-%d")
         end_date = timezone.datetime.strptime(end_date_str, "%Y-%m-%d")
     else:
-      
         if period == 'day':
             start_date = today - timezone.timedelta(days=1)
         elif period == 'week':
@@ -396,25 +401,62 @@ def generatePdf(request):
             return render(request, 'invalid_period.html')
 
         end_date = today
-    
+
     orders = Order.objects.filter(created_at__range=[start_date, end_date])
-    
+
     total_sales_amount = orders.aggregate(Sum('total_price'))['total_price__sum'] or 0
-    # total_discount_amount = orders.aggregate(Sum('discount_amount'))['discount_amount__sum'] or 0
     total_sales_count = orders.aggregate(Count('id'))['id__count'] or 0
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="sales_report.pdf"'
-    
-    p = canvas.Canvas(response)
-    
-    p.drawString(100, 800, f"Total Sales Count: {total_sales_count}")
-    p.drawString(100, 780, f"Total Sales Amount: {total_sales_amount}")
-    # p.drawString(100, 760, f"Total Discount Amount: {total_discount_amount}")
-    p.drawString(100, 740, f"Period: {period.capitalize()}")
 
-    p.showPage()
-    p.save()
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+
+    styles = getSampleStyleSheet()
+    title = Paragraph("Sales Report", styles['Title'])
+    elements.append(title)
+
+    shop_name = Paragraph("Shop Name: Your Shop Name", styles['Normal'])
+    elements.append(shop_name)
+
+    summary_data = [
+        ["Total Sales Count", total_sales_count],
+        ["Total Sales Amount", total_sales_amount],
+        ["Period", period.capitalize()]
+    ]
+
+    summary_table = Table(summary_data)
+    summary_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+    elements.append(summary_table)
+
+    elements.append(Paragraph("Sales History:", styles['Heading2']))
+
+    data = [["Order ID", "Date", "Total Price"]]
+    for order in orders:
+        data.append([order.id, order.created_at.strftime("%Y-%m-%d %H:%M"), order.total_price])
+
+    table = Table(data, colWidths=[1.5 * inch] * 3)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+    elements.append(table)
+
+    doc.build(elements)
 
     return response
 
