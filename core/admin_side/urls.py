@@ -27,6 +27,7 @@ urlpatterns = [
     path('activate_coupon/<int:coupon_id>/', views.activate_coupon, name='activate_coupon'),
 
     path('generatePdf/', views.generatePdf, name='generate_pdf'),
+    path('generateExcel/', views.generateExcel, name='generate_excel'),
     path('admin_offers/', views.admin_offers, name='admin_offers'),
     path('add_offer/', views.add_offer, name='add_offer'),
     path('assign_offer_to_product/', views.assign_offer_to_product, name='assign_offer_to_product'),

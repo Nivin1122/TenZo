@@ -17,6 +17,7 @@ from reportlab.lib import colors
 from reportlab.lib.units import inch
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from openpyxl import Workbook
 
 
 
@@ -414,11 +415,14 @@ def generatePdf(request):
     elements = []
 
     styles = getSampleStyleSheet()
+    
+    # Adding shop name in bold letters
+    shop_name_style = styles['Title']
+    shop_name = Paragraph("TenZo", shop_name_style)
+    elements.append(shop_name)
+    
     title = Paragraph("Sales Report", styles['Title'])
     elements.append(title)
-
-    shop_name = Paragraph("Shop Name: Your Shop Name", styles['Normal'])
-    elements.append(shop_name)
 
     summary_data = [
         ["Total Sales Count", total_sales_count],
@@ -457,6 +461,56 @@ def generatePdf(request):
     elements.append(table)
 
     doc.build(elements)
+
+    return response
+
+
+
+
+@login_required(login_url='/login/')
+def generateExcel(request):
+    today = timezone.now()
+    start_date_str = request.GET.get('start_date')
+    end_date_str = request.GET.get('end_date')
+    period = request.GET.get('period', 'month')
+
+    if start_date_str and end_date_str:
+        start_date = timezone.datetime.strptime(start_date_str, "%Y-%m-%d")
+        end_date = timezone.datetime.strptime(end_date_str, "%Y-%m-%d")
+    else:
+        if period == 'day':
+            start_date = today - timezone.timedelta(days=1)
+        elif period == 'week':
+            start_date = today - timezone.timedelta(weeks=1)
+        elif period == 'month':
+            start_date = today - timezone.timedelta(days=30)
+        elif period == 'year':
+            start_date = today - timezone.timedelta(days=365)
+        else:
+            return render(request, 'invalid_period.html')
+
+        end_date = today
+
+    orders = Order.objects.filter(created_at__range=[start_date, end_date])
+
+    # Create a workbook and add a worksheet
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sales Report"
+
+    # Adding headers
+    ws.append(["Order ID", "Date", "Total Price"])
+
+    # Adding data
+    for order in orders:
+        ws.append([order.id, order.created_at.strftime("%Y-%m-%d %H:%M"), order.total_price])
+
+    # Create a response
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="sales_report.xlsx"'
+
+    # Save workbook to response
+    wb.save(response)
 
     return response
 
