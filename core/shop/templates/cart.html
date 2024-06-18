@@ -211,8 +211,8 @@
                                                             alert(response.error);
                                                         } else {
                                                             $('#quantity-' + cartItemId).text(response.quantity);
-                                                            $('#total-' + cartItemId).text(response.total_price.toFixed(2));
-                                                            $('#cart-total').text(response.cart_total.toFixed(2));
+                                                            $('#subtotal-price').text(response.cart_total);
+                                                            $('#total-price').text(response.cart_total);
                                                         }
                                                     }
                                                 });
@@ -231,8 +231,8 @@
                                                             alert(response.error);
                                                         } else {
                                                             $('#quantity-' + cartItemId).text(response.quantity);
-                                                            $('#total-' + cartItemId).text(response.total_price.toFixed(2));
-                                                            $('#cart-total').text(response.cart_total.toFixed(2));
+                                                            $('#subtotal-price').text(response.cart_total);
+                                                            $('#total-price').text(response.cart_total);
                                                         }
                                                     }
                                                 });
@@ -286,7 +286,7 @@
                                         <tbody>
                                             <tr class="summary-subtotal">
                                                 <td>Subtotal:</td>
-                                                <td>₹{{ total_price|floatformat:2 }}</td>
+                                                <td id = "subtotal-price">₹{{ total_price|floatformat:2 }}</td>
                                             </tr><!-- End .summary-subtotal -->
                         
                                             <tr class="summary-shipping-row">
@@ -316,7 +316,7 @@
                         
                                             <tr class="summary-total">
                                                 <td>Total:</td>
-                                                <td>₹{{ total_price|floatformat:2 }}</td>
+                                                <td id = "total-price">₹{{ total_price|floatformat:2 }}</td>
                                             </tr><!-- End .summary-total -->
                                         </tbody>
                                     </table><!-- End .table table-summary -->

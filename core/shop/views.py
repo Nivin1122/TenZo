@@ -158,11 +158,7 @@ def list_cart(request):
 
     return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price, 'discount': discount})
 
-# def list_cart(request):
-#     user = request.user
-#     cart_items = Cart.objects.filter(user=user)
-#     total_price = sum(item.get_total_price() for item in cart_items)
-#     return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price})
+
 
 
 def remove_from_cart(request, cart_item_id):
@@ -329,16 +325,16 @@ def list_orders(request):
 def cancel_orders(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     
-    # Check if the order is not already canceled and the payment method is COD
+    
     if order.status != 'Canceled' and order.payment_method == 'COD':
-        # Only add to wallet balance if the order is Delivered
+      
         if order.status == 'Delivered':
             try:
                 wallet = Wallet.objects.get(user=request.user)
                 wallet.balance += order.total_price
                 wallet.save()
             except Wallet.DoesNotExist:
-                # Handle if Wallet does not exist (though ideally, it should exist)
+               
                 pass
     if order.payment_method == "RAZORPAY":
         if order.status != 'Canceled':
@@ -350,7 +346,6 @@ def cancel_orders(request, order_id):
             wallet.save()
 
         
-    # Mark the order as canceled regardless of payment method
     order.status = 'Canceled'
     order.save()
         
