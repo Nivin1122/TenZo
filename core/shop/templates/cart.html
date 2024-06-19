@@ -174,10 +174,10 @@
                                             </td>
 
                                             <td>{% if cart_item.product.offer and cart_item.product.offer.active %}
-                                            <p>Original Price: <strike>{{ cart_item.product.price }}</strike></p>
-                                            <p>Discounted Price: {{ cart_item.product.get_discounted_price|floatformat:2 }}</p>
+                                            <p>Original Price: <strike>₹{{ cart_item.product.price }}</strike></p>
+                                            <p>Discounted Price: ₹{{ cart_item.product.get_discounted_price|floatformat:2 }}</p>
                                             </td>{% else %}
-                                            <p>Price: {{ cart_item.product.price }}</p>
+                                            <p>Price: ₹{{ cart_item.product.price }}</p>
                                             {% endif %}
                                             <td class="quantity-col">
                                                 <button class="btn btn-decrease" data-id="{{ cart_item.id }}">-</button>
@@ -193,7 +193,7 @@
                                         </tr>
                                         {% endfor %}
                                     </tbody>
-                                    <p>Total: <span id="cart-total">{{ total_price|floatformat:2 }}</span></p>
+                                    
                                     
                                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                     <script>

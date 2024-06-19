@@ -82,23 +82,23 @@
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
                                 <li class="megamenu-container active">
-                                    <a href="/" class="sf-with-ul">HOME</a>
+                                    <a href="/" class="">HOME</a>
 
 
                                 </li>
                                 <li>
-                                    <a href="/all_products/" class="sf-with-ul">SHOP</a>
+                                    <a href="/all_products/" class="">SHOP</a>
 
 
                                 </li>
                                 
                                 <li>
-                                    <a href="/profile/" class="sf-with-ul">PROFILE</a>
+                                    <a href="/profile/" class="">PROFILE</a>
 
 
                                 </li>
                                 <li>
-                                    <a href="/wishlist/" class="sf-with-ul">WISHLIST</a>
+                                    <a href="/wishlist/" class="">WISHLIST</a>
                                 </li>
 
 
@@ -160,7 +160,7 @@
 
                                 <form method="get" id="product-sort-form">
                                     <div class="toolbox-sort">
-                                        <label for="sortby">Filter Products:</label>
+                                        <label for="sortby">Sort Products:</label>
                                         <div class="select-custom">
                                             <select name="sortby" id="sortby" class="form-control">
                                                 <option value="">Select Option</option>
@@ -279,7 +279,7 @@
                                             <p>Original Price: ₹<strike>{{ product.price|floatformat:2 }} </strike></p>
                                             <p>Discounted Price: ₹{{ product.get_discounted_price|floatformat:2 }} </p>
                                             {% else %}
-                                            <p>Price: {{ product.price }}</p>
+                                            <p>Price: ₹{{ product.price }}</p>
                                             {% endif %}
                                                         <div class="product-stock">
                                                             Stock: {{ product.stock }}

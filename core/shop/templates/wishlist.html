@@ -66,26 +66,23 @@
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
                                 <li class="megamenu-container active">
-                                    <a href="/" class="sf-with-ul">HOME</a>
+                                    <a href="/" class="">HOME</a>
 
                                     
                                 </li>
                                 <li>
-                                    <a href="/all_products/" class="sf-with-ul">SHOP</a>
+                                    <a href="/all_products/" class="">SHOP</a>
 
-                                    <div class="megamenu megamenu-md">
-                                        
-                                    </div><!-- End .megamenu megamenu-md -->
                                 </li>
                                 
                                 
                                 <li>
-                                    <a href="/profile/" class="sf-with-ul">PROFILE</a>
+                                    <a href="/profile/" class="">PROFILE</a>
 
                                     
                                 </li>
                                 <li>
-                                    <a href="/wishlist/" class="sf-with-ul">WISHLIST</a>
+                                    <a href="/wishlist/" class="">WISHLIST</a>
 
                                     
                                 </li>
@@ -176,7 +173,7 @@
                                                 </div>
                                                 
                                             </td>
-                                            <td class="price-col">{{ item.product.price }}</td>
+                                            <td class="price-col">₹{{ item.product.price }}</td>
                                             <td><form action="{% url 'add_to_cart' item.product.id %}" method="post">
                                                 {% csrf_token %}
                                                 <button type="submit">Add to Cart</button>
