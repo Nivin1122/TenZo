@@ -355,7 +355,7 @@
                                       <td>{{ order.status }}</td>
                                       
                                       <td>
-                                        {% if order.status != "Canceled" %}
+                                        {% if order.status != "Canceled" and order.status != "Returned" %}
                                           <form method="post" action="{% url 'update_order_status' order.id %}">
                                               {% csrf_token %}
                                               <select name="status" onchange="this.form.submit()" class="form-control">
