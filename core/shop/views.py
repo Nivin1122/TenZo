@@ -101,7 +101,6 @@ def product_details(request, id):
 
 
 
-
 @login_required
 def add_to_cart(request, product_id):
     if request.method == 'POST':
@@ -125,6 +124,8 @@ def add_to_cart(request, product_id):
                 cart_item.save()
                 response_data['message'] = "Product added to cart."
                 response_data['success'] = True
+            
+            Wishlist.objects.filter(user=user, product=product).delete()
         else:
             response_data['message'] = "Product is out of stock."
             response_data['success'] = False
@@ -137,6 +138,7 @@ def add_to_cart(request, product_id):
             else:
                 messages.error(request, response_data['message'])
             return redirect('cart')
+
 
 
 
