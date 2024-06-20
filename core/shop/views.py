@@ -207,7 +207,7 @@ def checkout(request):
     user = request.user
     user_addresses = Address.objects.filter(user=request.user)
     cart_items = Cart.objects.filter(user=user)
-    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    total_price = sum(item.product.get_discounted_price() * item.quantity for item in cart_items)
     return render(request, 'checkout.html',{'user_addresses':user_addresses, 'total_price' : total_price})
 
 
@@ -242,7 +242,7 @@ def place_order(request):
 
        
         cart_items = Cart.objects.filter(user=request.user)
-        total_price = sum(item.product.price * item.quantity for item in cart_items)
+        total_price = sum(item.product.get_discounted_price() * item.quantity for item in cart_items)
 
         order = Order.objects.create(
             user=request.user,
@@ -268,7 +268,7 @@ def place_order(request):
 
         return redirect('order_success', order_id=order.id)
 
-    return redirect('checkout') 
+    return redirect('checkout')
 
 
 # @login_required
@@ -336,7 +336,6 @@ def cancel_orders(request, order_id):
                 wallet.balance += order.total_price
                 wallet.save()
             except Wallet.DoesNotExist:
-               
                 pass
     if order.payment_method == "RAZORPAY":
         if order.status != 'Canceled':
@@ -350,7 +349,6 @@ def cancel_orders(request, order_id):
         
     order.status = 'Canceled'
     order.save()
-        
     return redirect('list_orders')
 
 
