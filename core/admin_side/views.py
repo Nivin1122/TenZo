@@ -52,14 +52,20 @@ def admin_home(request):
     orders = Order.objects.filter(created_at__range=[start_date, end_date])
 
     total_sales_amount = orders.aggregate(Sum('total_price'))['total_price__sum'] or 0
-    # total_discount_amount = orders.aggregate(Sum('discount_amount'))['discount_amount__sum'] or 0
     total_sales_count = orders.aggregate(Count('id'))['id__count'] or 0
+
+    # Calculate overall discount
+    total_discount_amount = sum(
+        item.quantity * (item.product.price - item.product.get_discounted_price())
+        for order in orders
+        for item in order.items.all()
+    )
 
     context = {
         'overall_sales_count': overall_sales_count,
         'overall_order_amount': overall_order_amount,
         'total_sales_amount': total_sales_amount,
-        # 'total_discount_amount': total_discount_amount,
+        'total_discount_amount': total_discount_amount,
         'total_sales_count': total_sales_count,
         'start_date': start_date,
         'end_date': end_date,
@@ -426,7 +432,7 @@ def generatePdf(request):
 
     summary_data = [
         ["Total Sales Count", total_sales_count],
-        ["Total Sales Amount", total_sales_amount],
+        ["Total Sales Amount", f"{total_sales_amount:.2f}"],
         ["Period", period.capitalize()]
     ]
 
@@ -444,11 +450,18 @@ def generatePdf(request):
 
     elements.append(Paragraph("Sales History:", styles['Heading2']))
 
-    data = [["Order ID", "Date", "Total Price"]]
+    data = [["Order ID", "Date", "Product Name", "Total Price", "Discount Amount"]]
     for order in orders:
-        data.append([order.id, order.created_at.strftime("%Y-%m-%d %H:%M"), order.total_price])
+        for item in order.items.all():  # Accessing related OrderItems
+            data.append([
+                order.id,
+                order.created_at.strftime("%Y-%m-%d %H:%M"),
+                item.product.name,
+                f"{item.product.get_discounted_price() * item.quantity:.2f}",  # Total Price formatted to 2 decimals
+                f"{item.product.price - item.product.get_discounted_price():.2f}"  # Discount Amount formatted to 2 decimals
+            ])
 
-    table = Table(data, colWidths=[1.5 * inch] * 3)
+    table = Table(data, colWidths=[1.5 * inch] * 5)
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -493,6 +506,9 @@ def generateExcel(request):
 
     orders = Order.objects.filter(created_at__range=[start_date, end_date])
 
+    # Compute total sales amount
+    total_sales_amount = sum(order.total_price for order in orders)
+
     # Create a workbook and add a worksheet
     wb = Workbook()
     ws = wb.active
@@ -504,6 +520,9 @@ def generateExcel(request):
     # Adding data
     for order in orders:
         ws.append([order.id, order.created_at.strftime("%Y-%m-%d %H:%M"), order.total_price])
+
+    # Adding total sales amount row
+    ws.append(["Total Sales Amount", total_sales_amount])
 
     # Create a response
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
