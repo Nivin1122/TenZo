@@ -10,6 +10,15 @@ from user_side.models import Address
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from decimal import Decimal
+from django.http import HttpResponse
+from reportlab.pdfgen import canvas
+from io import BytesIO
+from django.template.loader import render_to_string
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+
 
 
 
@@ -408,3 +417,90 @@ def wallet_detail(request):
     except Wallet.DoesNotExist:
         wallet_balance = Decimal('0.00')
         return render(request, 'wallet_detail.html', {'wallet_balance': wallet_balance})
+    
+
+
+
+@login_required(login_url='/login/')
+def generatePdf(request, order_id):
+    # Retrieve the order object
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    # Create a PDF document
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="invoice_{order.id}.pdf"'
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+
+    elements = []
+
+    # Create a bordered box for the entire invoice
+    invoice_table_style = TableStyle([
+        ('BOX', (0, 0), (-1, -1), 1, colors.black),  # Border around the entire table
+        ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.grey),  # Inner grid lines
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Vertical alignment
+        ('BACKGROUND', (0, 0), (-1, -1), colors.white),  # Background color
+    ])
+
+    # Title
+    title = Paragraph("Invoice", styles['Title'])
+    elements.append(title)
+
+    # Order Info
+    order_info_data = [
+        ["Order ID:", str(order.id)],
+        ["Date:", order.created_at.strftime("%Y-%m-%d %H:%M")]
+    ]
+    order_info_table = Table(order_info_data, colWidths=[100, 200])
+    order_info_table.setStyle(invoice_table_style)
+    elements.append(order_info_table)
+
+    # Shipping Address
+    shipping_info_data = [
+        ["Shipping Address:"],
+        [f"Name: {order.shipping_address.name}"],
+        [f"Street: {order.shipping_address.street}"],
+        [f"City: {order.shipping_address.city}"],
+        [f"State: {order.shipping_address.state}"],
+        [f"Country: {order.shipping_address.country}"],
+        [f"Phone: {order.shipping_address.phone_no}"]
+    ]
+    shipping_info_table = Table(shipping_info_data, colWidths=[300])
+    shipping_info_table.setStyle(invoice_table_style)
+    elements.append(shipping_info_table)
+
+    # Order Items
+    order_items_data = [
+        ["Product", "Quantity", "Price"]
+    ]
+    for item in order.items.all():
+        product_name = item.product.name
+        quantity = str(item.quantity)
+        price = f"₹{item.product.get_discounted_price() * item.quantity:.2f}"
+        order_items_data.append([product_name, quantity, price])
+
+    order_items_table = Table(order_items_data, colWidths=[300, 100, 100])
+    order_items_table.setStyle(invoice_table_style)
+    elements.append(Paragraph("Order Items:", styles['Heading2']))
+    elements.append(order_items_table)
+
+    # Total Price
+    total_price_data = [
+        ["Total Price:", f"₹{order.total_price:.2f}"]
+    ]
+    total_price_table = Table(total_price_data, colWidths=[300, 100])
+    total_price_table.setStyle(invoice_table_style)
+    elements.append(total_price_table)
+
+    doc.build(elements)
+
+    # Get PDF content and close buffer
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    # Write PDF response
+    response.write(pdf)
+
+    return response

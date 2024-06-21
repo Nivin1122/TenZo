@@ -110,7 +110,7 @@
         <main class="main">
             <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
                 <div class="container">
-                    <h1 class="page-title">Addresses<span>Shop</span></h1>
+                    <h1 class="page-title">ORDER DETAILS<span>Shop</span></h1>
                 </div><!-- End .container -->
             </div><!-- End .page-header -->
             <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
@@ -220,7 +220,7 @@
                                 <p>Quantity: {{ item.quantity }}</p>
                             </div>
                             <div class="col-md-3">
-                                <p>Price: ₹{{ item.product.price|floatformat:2 }}</p>
+                                <p>Price: ₹{{ item.product.get_discounted_price|floatformat:2 }}</p>
                             </div>
                             <div class="col-md-3">
                                 <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-image">
@@ -230,6 +230,7 @@
                     {% endfor %}
                 </ul>
                 <div class="text-center">
+                    <a href="{% url 'generatePdf' order.id %}" class="btn btn-primary">Download Invoice (PDF)</a>
                     <a href="{% url 'list_orders' %}" class="btn btn-custom">Back to Orders</a>
                 </div>
             </div>
