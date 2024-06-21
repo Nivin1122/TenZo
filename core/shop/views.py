@@ -17,7 +17,7 @@ from django.template.loader import render_to_string
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle,Spacer
 
 
 
@@ -436,26 +436,29 @@ def generatePdf(request, order_id):
 
     elements = []
 
-    # Create a bordered box for the entire invoice
-    invoice_table_style = TableStyle([
-        ('BOX', (0, 0), (-1, -1), 1, colors.black),  # Border around the entire table
-        ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.grey),  # Inner grid lines
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Vertical alignment
-        ('BACKGROUND', (0, 0), (-1, -1), colors.white),  # Background color
-    ])
+    company_name = Paragraph("TenZo", styles['Title'])
+    elements.append(company_name)
+    elements.append(Spacer(1, 12))
 
     # Title
     title = Paragraph("Invoice", styles['Title'])
     elements.append(title)
+
+    # Create the main table data
+    main_table_data = []
 
     # Order Info
     order_info_data = [
         ["Order ID:", str(order.id)],
         ["Date:", order.created_at.strftime("%Y-%m-%d %H:%M")]
     ]
-    order_info_table = Table(order_info_data, colWidths=[100, 200])
-    order_info_table.setStyle(invoice_table_style)
-    elements.append(order_info_table)
+    main_table_data.append([Table(order_info_data, colWidths=[100, 300], style=[
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey)
+    ])])
+
+    # Add space between sections
+    main_table_data.append([""])
 
     # Shipping Address
     shipping_info_data = [
@@ -467,9 +470,13 @@ def generatePdf(request, order_id):
         [f"Country: {order.shipping_address.country}"],
         [f"Phone: {order.shipping_address.phone_no}"]
     ]
-    shipping_info_table = Table(shipping_info_data, colWidths=[300])
-    shipping_info_table.setStyle(invoice_table_style)
-    elements.append(shipping_info_table)
+    main_table_data.append([Table(shipping_info_data, colWidths=[400], style=[
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('BACKGROUND', (0, 0), (0, 0), colors.lightgrey)
+    ])])
+
+    # Add space between sections
+    main_table_data.append([""])
 
     # Order Items
     order_items_data = [
@@ -478,21 +485,34 @@ def generatePdf(request, order_id):
     for item in order.items.all():
         product_name = item.product.name
         quantity = str(item.quantity)
-        price = f"₹{item.product.get_discounted_price() * item.quantity:.2f}"
+        price = f"Rs.{item.product.get_discounted_price() * item.quantity:.2f}"
         order_items_data.append([product_name, quantity, price])
 
-    order_items_table = Table(order_items_data, colWidths=[300, 100, 100])
-    order_items_table.setStyle(invoice_table_style)
-    elements.append(Paragraph("Order Items:", styles['Heading2']))
-    elements.append(order_items_table)
+    order_items_table = Table(order_items_data, colWidths=[250, 75, 75], style=[
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('BACKGROUND', (0, 0), (0, 0), colors.lightgrey),
+        ('ALIGN', (1, 1), (-1, -1), 'CENTER')
+    ])
+    main_table_data.append([order_items_table])
+
+    # Add space between sections
+    main_table_data.append([""])
 
     # Total Price
     total_price_data = [
-        ["Total Price:", f"₹{order.total_price:.2f}"]
+        ["Total Price:", f"Rs.{order.total_price:.2f}"]
     ]
-    total_price_table = Table(total_price_data, colWidths=[300, 100])
-    total_price_table.setStyle(invoice_table_style)
-    elements.append(total_price_table)
+    main_table_data.append([Table(total_price_data, colWidths=[300, 100], style=[
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('BACKGROUND', (0, 0), (0, 0), colors.lightgrey)
+    ])])
+
+    # Create the main table
+    main_table = Table(main_table_data, colWidths=[410], style=[
+        ('BOX', (0, 0), (-1, -1), 1, colors.black),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP')
+    ])
+    elements.append(main_table)
 
     doc.build(elements)
 
