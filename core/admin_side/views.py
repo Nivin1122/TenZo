@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import HttpResponse
 from user_side.models import Customuser
-from product_side.models import Category,Product,Order,Offer,Coupon
+from product_side.models import Category,Product,Order,Offer,Coupon,OrderItem
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.db.models import Sum,Count
@@ -18,6 +18,7 @@ from reportlab.lib.units import inch
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from openpyxl import Workbook
+import json
 
 
 
@@ -61,6 +62,16 @@ def admin_home(request):
         for item in order.items.all()
     )
 
+    # Prepare data for the sales chart
+    sales_by_date = orders.extra({'date': 'date(created_at)'}).values('date').annotate(total_sales=Sum('total_price')).order_by('date')
+    dates = [entry['date'].strftime('%Y-%m-%d') for entry in sales_by_date]
+    sales = [float(entry['total_sales']) for entry in sales_by_date]
+
+    # Prepare data for the donut chart
+    top_products = OrderItem.objects.values('product__name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:10]
+    product_names = [product['product__name'] for product in top_products]
+    product_quantities = [product['total_quantity'] for product in top_products]
+
     context = {
         'overall_sales_count': overall_sales_count,
         'overall_order_amount': overall_order_amount,
@@ -70,6 +81,10 @@ def admin_home(request):
         'start_date': start_date,
         'end_date': end_date,
         'period': period,
+        'dates': json.dumps(dates),
+        'sales': json.dumps(sales),
+        'product_names': json.dumps(product_names),
+        'product_quantities': json.dumps(product_quantities),
     }
 
     return render(request, 'admin_home.html', context)

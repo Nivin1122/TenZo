@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/owl-carousel-2/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/owl-carousel-2/owl.theme.default.min.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <!-- endinject -->
@@ -385,77 +387,174 @@
                       </div>
                   </div>
               </div>
+              
           </div>
+
+          <h2>Top 10 Best-Selling Products</h2>
+    <div style="max-width: 400px;">
+        <canvas id="topProductsChart"></canvas>
+    </div>
+
+    <script>
+        var ctx = document.getElementById('topProductsChart').getContext('2d');
+        var topProductsChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ product_names|safe }},
+                datasets: [{
+                    label: 'Top 10 Best-Selling Products',
+                    data: {{ product_quantities|safe }},
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(199, 199, 199, 0.2)',
+                        'rgba(83, 102, 255, 0.2)',
+                        'rgba(178, 159, 64, 0.2)',
+                        'rgba(100, 206, 86, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)',
+                        'rgba(83, 102, 255, 1)',
+                        'rgba(178, 159, 64, 1)',
+                        'rgba(100, 206, 86, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Ensures the chart area maintains the same aspect ratio
+                plugins: {
+                    legend: {
+                        position: 'bottom', // Position of the legend
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    
+    
           
           
             
             
-            <div class="row">
-              <div class="col-12 grid-margin">
-                  <div class="card">
-                      <div class="card-body">
-                          <h4 class="card-title">Sales Report</h4>
-                          
-                          <form method="get" action="{% url 'admin_home' %}">
-                            <div class="form-group mr-3">
-                                <label for="start_date" class="mr-2">Start Date:</label>
-                                <input type="date" name="start_date" class="form-control" value="">
-                            </div>
-                            <div class="form-group mr-3">
-                                <label for="end_date" class="mr-2">End Date:</label>
-                                <input type="date" name="end_date" class="form-control" value="">
-                            </div>
-                            <h3>OR</h3>
-                            <div class="form-group mr-3">
-                                <label for="period" class="mr-2">Period:</label>
-                                <select class="form-control" name="period">
-                                    <option value="day" {% if period == 'day' %}selected{% endif %}>Day</option>
-                                    <option value="week" {% if period == 'week' %}selected{% endif %}>Week</option>
-                                    <option value="month" {% if period == 'month' %}selected{% endif %}>Month</option>
-                                    <option value="year" {% if period == 'year' %}selected{% endif %}>Year</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-icon-text">
-                                <i class="ti-search btn-icon-prepend"></i>Search
-                            </button>
-                        </form>
-                      </div>
-                      <div class="table-responsive">
-                          <table class="table">
-                              <thead>
-                                  <tr>
-                                      <th>Sales Count</th>
-                                      <th>Total Sales</th>
-                                      <th>Discounts</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  <tr>
-                                      <td>{{ total_sales_count }}</td>
-                                      <td>{{ total_sales_amount }}</td>
-                                      <td>{{ total_discount_amount|floatformat:2 }}</td>
-                                  </tr>
-                              </tbody>
-                          </table>
-                      </div>
-                      <div class="card-footer">
-                        <a href="/generatePdf/?start_date={{ start_date|date:"Y-m-d" }}&end_date={{ end_date|date:"Y-m-d" }}&period={{ period }}" class="btn btn-primary btn-icon-text btn-rounded">
-                            <i class="ti-print btn-icon-prepend"></i> Print Report
-                        </a>
-                    </div>
-                    <div class="card-footer">
-                      <a href="/generateExcel/?start_date={{ start_date|date:"Y-m-d" }}&end_date={{ end_date|date:"Y-m-d" }}&period={{ period }}" class="btn btn-success btn-icon-text btn-rounded">
-                          <i class="ti-file-excel btn-icon-prepend"></i>Export to Excel
-                      </a>
+          <!-- Include this inside your admin home template -->
+<!-- Include this inside your admin home template -->
+<!-- Include this inside your admin home template -->
+<div class="row">
+  <div class="col-12 grid-margin">
+      <div class="card">
+          <div class="card-body">
+              <h4 class="card-title">Sales Report</h4>
+              
+              <form method="get" action="{% url 'admin_home' %}">
+                  <div class="form-group mr-3">
+                      <label for="start_date" class="mr-2">Start Date:</label>
+                      <input type="date" name="start_date" class="form-control" value="">
                   </div>
+                  <div class="form-group mr-3">
+                      <label for="end_date" class="mr-2">End Date:</label>
+                      <input type="date" name="end_date" class="form-control" value="">
                   </div>
-              </div>
+                  <h3>OR</h3>
+                  <div class="form-group mr-3">
+                      <label for="period" class="mr-2">Period:</label>
+                      <select class="form-control" name="period">
+                          <option value="day" {% if period == 'day' %}selected{% endif %}>Day</option>
+                          <option value="week" {% if period == 'week' %}selected{% endif %}>Week</option>
+                          <option value="month" {% if period == 'month' %}selected{% endif %}>Month</option>
+                          <option value="year" {% if period == 'year' %}selected{% endif %}>Year</option>
+                      </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-icon-text">
+                      <i class="ti-search btn-icon-prepend"></i>Search
+                  </button>
+              </form>
+          </div>
+          <div class="table-responsive">
+              <table class="table">
+                  <thead>
+                      <tr>
+                          <th>Sales Count</th>
+                          <th>Total Sales</th>
+                          <th>Discounts</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td>{{ total_sales_count }}</td>
+                          <td>{{ total_sales_amount }}</td>
+                          <td>{{ total_discount_amount|floatformat:2 }}</td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+          <div class="card-footer">
+              <a href="/generatePdf/?start_date={{ start_date|date:"Y-m-d" }}&end_date={{ end_date|date:"Y-m-d" }}&period={{ period }}" class="btn btn-primary btn-icon-text btn-rounded">
+                  <i class="ti-print btn-icon-prepend"></i> Print Report
+              </a>
+          </div>
+          <div class="card-footer">
+              <a href="/generateExcel/?start_date={{ start_date|date:"Y-m-d" }}&end_date={{ end_date|date:"Y-m-d" }}&period={{ period }}" class="btn btn-success btn-icon-text btn-rounded">
+                  <i class="ti-file-excel btn-icon-prepend"></i>Export to Excel
+              </a>
+          </div>
+          <!-- Chart Container -->
+          <div class="card-body">
+              <canvas id="salesChart" width="400" height="200"></canvas>
+          </div>
+      </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      var ctx = document.getElementById('salesChart').getContext('2d');
+      var salesChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: JSON.parse('{{ dates|escapejs }}'),
+              datasets: [{
+                  label: 'Sales',
+                  data: JSON.parse('{{ sales|escapejs }}'),
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  y: {
+                      beginAtZero: true
+                  }
+              }
+          }
+      });
+  });
+</script>
+
           </div>
           
-          
-            
-            
-          </div>
+
+    
           <!-- content-wrapper ends -->
           <!-- partial:partials/_footer.html -->
           <footer class="footer">
