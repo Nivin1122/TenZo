@@ -388,8 +388,8 @@ def activate_coupon(request, coupon_id):
 @login_required(login_url='/login/')
 def generatePdf(request):
     today = timezone.now()
-    start_date_str = request.GET.get('start_date')
-    end_date_str = request.GET.get('end_date')
+    start_date_str = request.GET.get('start_date', '').strip()
+    end_date_str = request.GET.get('end_date', '').strip()
     period = request.GET.get('period', 'month')
 
     if start_date_str and end_date_str:
@@ -483,8 +483,8 @@ def generatePdf(request):
 @login_required(login_url='/login/')
 def generateExcel(request):
     today = timezone.now()
-    start_date_str = request.GET.get('start_date')
-    end_date_str = request.GET.get('end_date')
+    start_date_str = request.GET.get('start_date', '').strip()
+    end_date_str = request.GET.get('end_date', '').strip()
     period = request.GET.get('period', 'month')
 
     if start_date_str and end_date_str:

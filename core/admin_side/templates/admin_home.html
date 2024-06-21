@@ -439,15 +439,15 @@
                           </table>
                       </div>
                       <div class="card-footer">
-                        <a href="/generatePdf/" class="btn btn-primary btn-icon-text btn-rounded">
-                          <i class="ti-print btn-icon-prepend"></i>Print Report
-                      </a>
-                      </div>
-                      <div class="card-footer">
-                        <a href="/generateExcel/" class="btn btn-success btn-icon-text btn-rounded">
-                            <i class="ti-file-excel btn-icon-prepend"></i>Export to Excel
+                        <a href="/generatePdf/?start_date={{ start_date|date:"Y-m-d" }}&end_date={{ end_date|date:"Y-m-d" }}&period={{ period }}" class="btn btn-primary btn-icon-text btn-rounded">
+                            <i class="ti-print btn-icon-prepend"></i> Print Report
                         </a>
                     </div>
+                    <div class="card-footer">
+                      <a href="/generateExcel/?start_date={{ start_date|date:"Y-m-d" }}&end_date={{ end_date|date:"Y-m-d" }}&period={{ period }}" class="btn btn-success btn-icon-text btn-rounded">
+                          <i class="ti-file-excel btn-icon-prepend"></i>Export to Excel
+                      </a>
+                  </div>
                   </div>
               </div>
           </div>
