@@ -19,6 +19,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from openpyxl import Workbook
 import json
+from django.db.models import Count, Sum, F
 
 
 
@@ -67,10 +68,15 @@ def admin_home(request):
     dates = [entry['date'].strftime('%Y-%m-%d') for entry in sales_by_date]
     sales = [float(entry['total_sales']) for entry in sales_by_date]
 
-    # Prepare data for the donut chart
+    # Prepare data for the donut chart - top products
     top_products = OrderItem.objects.values('product__name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:10]
     product_names = [product['product__name'] for product in top_products]
     product_quantities = [product['total_quantity'] for product in top_products]
+
+    # Prepare data for the donut chart - top categories
+    top_categories = OrderItem.objects.values('product__category__name').annotate(total_sales=Sum(F('quantity') * F('product__price'))).order_by('-total_sales')[:10]
+    category_names = [category['product__category__name'] for category in top_categories]
+    category_sales = [float(category['total_sales']) for category in top_categories]
 
     context = {
         'overall_sales_count': overall_sales_count,
@@ -85,6 +91,8 @@ def admin_home(request):
         'sales': json.dumps(sales),
         'product_names': json.dumps(product_names),
         'product_quantities': json.dumps(product_quantities),
+        'category_names': json.dumps(category_names),
+        'category_sales': json.dumps(category_sales),
     }
 
     return render(request, 'admin_home.html', context)

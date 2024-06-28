@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <!-- End layout styles -->
     <!-- <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" /> -->
+     
   </head>
   <body>
     <div class="container-scroller">
@@ -96,12 +97,12 @@
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" data-toggle="collapse" href="/users/" aria-expanded="false" aria-controls="ui-basic">
+            <a class="nav-link"  href="/users/" aria-expanded="false" aria-controls="ui-basic">
               <span class="menu-icon">
                 <i class="mdi mdi-laptop"></i>
               </span>
               <span class="menu-title">Users</span>
-              <i class="menu-arrow"></i>
+              <!-- <i class="menu-arrow"></i> -->
             </a>
             <div class="collapse" id="ui-basic">
               
@@ -389,67 +390,154 @@
               </div>
               
           </div>
-
-          <h2>Top 10 Best-Selling Products</h2>
-    <div style="max-width: 400px;">
-        <canvas id="topProductsChart"></canvas>
-    </div>
-
-    <script>
-        var ctx = document.getElementById('topProductsChart').getContext('2d');
-        var topProductsChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: {{ product_names|safe }},
-                datasets: [{
-                    label: 'Top 10 Best-Selling Products',
-                    data: {{ product_quantities|safe }},
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(199, 199, 199, 0.2)',
-                        'rgba(83, 102, 255, 0.2)',
-                        'rgba(178, 159, 64, 0.2)',
-                        'rgba(100, 206, 86, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(199, 199, 199, 1)',
-                        'rgba(83, 102, 255, 1)',
-                        'rgba(178, 159, 64, 1)',
-                        'rgba(100, 206, 86, 1)',
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false, // Ensures the chart area maintains the same aspect ratio
-                plugins: {
-                    legend: {
-                        position: 'bottom', // Position of the legend
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                return tooltipItem.label + ': ' + tooltipItem.raw;
-                            }
-                        }
-                    }
-                }
+          <style>
+            .charts-container {
+                display: flex;
+                justify-content: center; /* Space out the charts evenly */
+                align-items: center; /* Align charts to the top */
+                gap: 50px; /* Add some space between the charts */
+                padding-top: 100px;
             }
-        });
-    </script>
-    
+            .chart-wrapper {
+                flex: 1; /* Allow charts to grow equally */
+                max-width: 500px;
+            }
+            .chart-container {
+                position: relative;
+                width: 100%;
+                padding-top: 100%; /* This creates a 1:1 aspect ratio */
+            }
+            .chart-container canvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+
+<div class="charts-container">
+  <div class="chart-wrapper">
+      <h3>Top 10 Best-Selling Products</h3>
+      <div class="chart-container">
+          <canvas id="topProductsChart"></canvas>
+      </div>
+  </div>
+
+  <div class="chart-wrapper">
+      <h3 style="text-align: center;">Top-Selling Categories</h3>
+      <div class="chart-container">
+          <canvas id="topCategoriesChart"></canvas>
+      </div>
+  </div>
+</div>
+
+<script>
+  var ctxProducts = document.getElementById('topProductsChart').getContext('2d');
+  var topProductsChart = new Chart(ctxProducts, {
+      type: 'doughnut',
+      data: {
+          labels: {{ product_names|safe }},
+          datasets: [{
+              label: 'Top 10 Best-Selling Products',
+              data: {{ product_quantities|safe }},
+              backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(255, 159, 64, 0.2)',
+                  'rgba(199, 199, 199, 0.2)',
+                  'rgba(83, 102, 255, 0.2)',
+                  'rgba(178, 159, 64, 0.2)',
+                  'rgba(100, 206, 86, 0.2)',
+              ],
+              borderColor: [
+                  'rgba(255, 99, 132, 1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+                  'rgba(255, 159, 64, 1)',
+                  'rgba(199, 199, 199, 1)',
+                  'rgba(83, 102, 255, 1)',
+                  'rgba(178, 159, 64, 1)',
+                  'rgba(100, 206, 86, 1)',
+              ],
+              borderWidth: 1
+          }]
+      },
+      options: {
+          responsive: true,
+          maintainAspectRatio: false, // Ensures the chart area maintains the same aspect ratio
+          plugins: {
+              legend: {
+                  position: 'bottom', // Position of the legend
+              },
+              tooltip: {
+                  callbacks: {
+                      label: function(tooltipItem) {
+                          return tooltipItem.label + ': ' + tooltipItem.raw;
+                      }
+                  }
+              }
+          }
+      }
+  });
+
+  var ctxCategories = document.getElementById('topCategoriesChart').getContext('2d');
+  var topCategoriesChart = new Chart(ctxCategories, {
+      type: 'doughnut',
+      data: {
+          labels: {{ category_names|safe }},
+          datasets: [{
+              data: {{ category_sales|safe }},
+              backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(255, 159, 64, 0.2)',
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)'
+              ],
+              borderColor: [
+                  'rgba(255, 99, 132, 1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+                  'rgba(255, 159, 64, 1)',
+                  'rgba(255, 99, 132, 1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)'
+              ],
+              borderWidth: 1
+          }]
+      },
+      options: {
+          responsive: true,
+          maintainAspectRatio: false, // Ensures the chart area maintains the same aspect ratio
+          plugins: {
+              legend: {
+                  position: 'top',
+              },
+              tooltip: {
+                  callbacks: {
+                      label: function(tooltipItem) {
+                          return tooltipItem.label + ': $' + tooltipItem.raw.toFixed(2);
+                      }
+                  }
+              }
+          }
+      }
+  });
+</script>
     
           
           
