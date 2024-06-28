@@ -226,17 +226,23 @@ def place_order(request):
         selected_address_id = request.POST.get('selected_address')
         payment_method = request.POST.get('payment_method')
         if not selected_address_id:
-            return redirect('checkout') 
+            return redirect('checkout')
 
         try:
             address = Address.objects.get(id=selected_address_id)
         except Address.DoesNotExist:
             return redirect('checkout')
-        
+
         cart_items = Cart.objects.filter(user=request.user)
         if not cart_items.exists():
             messages.error(request, "Your cart is empty. Please add at least one product to place an order.")
-            return redirect('checkout') 
+            return redirect('checkout')
+
+        total_price = sum(item.product.get_discounted_price() * item.quantity for item in cart_items)
+
+        if payment_method == 'COD' and total_price > 1000:
+            messages.error(request, "Cash on Delivery is not available for orders above 1000 Rs. Please choose another payment method.")
+            return redirect('checkout')
 
         shipping_address = Shipping_address.objects.create(
             street=address.street,
@@ -249,14 +255,10 @@ def place_order(request):
             phone_no=address.phone_no
         )
 
-       
-        cart_items = Cart.objects.filter(user=request.user)
-        total_price = sum(item.product.get_discounted_price() * item.quantity for item in cart_items)
-
         order = Order.objects.create(
             user=request.user,
             shipping_address=shipping_address,
-            payment_method=payment_method,  
+            payment_method=payment_method,
             total_price=total_price,
             created_at=timezone.now(),
             status='Pending'
@@ -269,7 +271,6 @@ def place_order(request):
                 quantity=item.quantity
             )
 
-           
             item.product.stock -= item.quantity
             item.product.save()
 
@@ -333,6 +334,14 @@ def list_orders(request):
 
 
 @login_required
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'order_detail.html', {'order': order})
+
+
+
+
+@login_required
 def cancel_orders(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     
@@ -362,10 +371,7 @@ def cancel_orders(request, order_id):
 
 
 
-@login_required
-def order_detail(request, order_id):
-    order = get_object_or_404(Order, id=order_id, user=request.user)
-    return render(request, 'order_detail.html', {'order': order})
+
 
 
 

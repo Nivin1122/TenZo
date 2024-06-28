@@ -224,7 +224,7 @@
                                                 <tr class="total-data">
                                                     <td>
                                                         <select name="payment_method" id="paymentMethod">
-                                                            <option value="COD">Cash on Delivery</option>
+                                                            <option value="COD" {% if total_price > 1000 %}disabled{% endif %}>Cash on Delivery</option>
                                                             <option value="RAZORPAY">Razorpay</option>
                                                         </select>
                                                     </td>
