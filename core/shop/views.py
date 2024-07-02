@@ -162,8 +162,11 @@ def list_cart(request):
     if coupon_code:
         try:
             coupon = Coupon.objects.get(code=coupon_code, active=True, valid_from__lte=timezone.now(), valid_to__gte=timezone.now())
-            discount = coupon.discount_amount
-            total_price -= discount
+            if total_price >= coupon.min_order_amount:
+                discount = coupon.discount_amount
+                total_price -= discount
+            else:
+                messages.error(request, f'Minimum order amount for this coupon is {coupon.min_order_amount}.')
         except Coupon.DoesNotExist:
             messages.error(request, 'Invalid coupon code or coupon has expired.')
 
@@ -368,10 +371,6 @@ def cancel_orders(request, order_id):
     order.status = 'Canceled'
     order.save()
     return redirect('list_orders')
-
-
-
-
 
 
 

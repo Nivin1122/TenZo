@@ -28,8 +28,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env.get_value("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-ALLOWED_HOSTS = ["*"]
+DEBUG = True
+
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -145,7 +146,7 @@ else:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

@@ -370,12 +370,12 @@ def add_coupon(request):
         Coupon.objects.create(
             code=code,
             discount_amount=discount_amount,
-            min_order_amount=min_order_amount,
+            min_order_amount=min_order_amount if min_order_amount else 0,
             valid_from=valid_from,
             valid_to=valid_to
         )
 
-        return redirect('coupon_manage')  
+        return redirect('coupon_manage')
 
     return render(request, 'add_coupon.html')
 
