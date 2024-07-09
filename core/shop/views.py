@@ -343,6 +343,38 @@ def order_detail(request, order_id):
 
 
 
+@login_required
+def cancel_order_item(request, order_item_id):
+    order_item = get_object_or_404(OrderItem, id=order_item_id, order__user=request.user)
+    order = order_item.order
+
+    if order_item.status == 'Canceled':
+        messages.error(request, "This item is already canceled.")
+        return redirect('order_detail', order_id=order.id)
+
+    if order_item.status != 'Delivered':
+        # Update stock
+        order_item.product.stock += order_item.quantity
+        order_item.product.save()
+
+        # Update the item's status
+        order_item.status = 'Canceled'
+        order_item.save()
+
+        # Deduct the item's price from the total order price
+        order.total_price -= order_item.product.get_discounted_price() * order_item.quantity
+        order.save()
+
+        # Update wallet balance if payment method is Razorpay
+        if order.payment_method == "RAZORPAY":
+            wallet = Wallet.objects.get(user=request.user)
+            wallet.balance += order_item.product.get_discounted_price() * order_item.quantity
+            wallet.save()
+
+    return redirect('order_detail', order_id=order.id)
+
+
+
 
 @login_required
 def cancel_orders(request, order_id):

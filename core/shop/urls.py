@@ -23,6 +23,7 @@ urlpatterns = [
     path('orders/', views.list_orders, name='list_orders'),
     path('order_detail/<int:order_id>/', views.order_detail, name='order_detail'),
     path('order/cancel/<int:order_id>/', views.cancel_orders, name='cancel_orders'),
+    path('order/item/cancel/<int:order_item_id>/', views.cancel_order_item, name='cancel_order_item'),
 
     path('return_order/<int:order_id>/', views.return_order, name='return_order'),
     path('wallet/', views.wallet_detail, name='wallet_detail'),

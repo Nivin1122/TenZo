@@ -146,6 +146,7 @@
                     .list-group-item:last-child {
                         border-bottom: 0;
                     }
+
                     .btn-custom {
                         background-color: #5cb85c;
                         border-color: #4cae4c;
@@ -177,13 +178,55 @@
                         padding-left: 1rem;
                         margin-left: 1rem;
                     }
+
+                    .boton-elegante {
+  padding: 10px 50px;
+  margin-top: 30px;
+  border: 2px solid #bf1e1e;
+  background-color: #ce2a2a;
+  color: #ffffff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 30px;
+  transition: all 0.4s ease;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+  font-weight: bold;
+}
+
+.boton-elegante::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: scale(0);
+  transition: transform 0.5s ease;
+}
+
+.boton-elegante:hover::after {
+  transform: scale(4);
+}
+
+.boton-elegante:hover {
+  border-color: #666666;
+  background: #292929;
+}
+
                 </style>
                 <div class="card">
                     <div class="card-body">
                         <div class="order-details">
                             <h2 class="card-title">Order ID: {{ order.id }}</h2>
                             <p class="card-text">Date: {{ order.created_at|date:"d M Y H:i" }}</p>
-                            <p class="card-text">Total Price: ₹{{ order.total_price|floatformat:2 }}</p>
+                            <p class="card-text">Total Price: ₹<span id="order-total-price">{{ order.total_price|floatformat:2 }}</span></p>
                             <p class="card-text">Status: {{ order.status }}</p>
                             <p class="card-text">Payment Method: {{ order.payment_method }}</p>
                         </div>
@@ -201,21 +244,45 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     {% for item in order.items.all %}
-                    <li class="list-group-item">
+                    <li class="list-group-item" id="order-item-{{ item.id }}">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <h5>{{ item.product.name }}</h5>
                             </div>
                             <div class="col-md-2">
                                 <p>Quantity: {{ item.quantity }}</p>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <p>Price: ₹{{ item.product.get_discounted_price|floatformat:2 }}</p>
                             </div>
-                            <div class="col-md-3">
-                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-image">
+                            <div class="col-md-2">
+                                <p>Status: {{ item.status }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid" width="75" height="100">
+                            </div>
+                            <div class="col-md-2">
+                                {% if item.status != 'Canceled' %}
+                                <form method="post" action="{% url 'cancel_order_item' item.id %}">
+                                    {% csrf_token %}
+                                    <!-- <button type="submit" class="btn btn-danger btn-sm">Cancel</button> -->
+                                    <button type="submit" class="boton-elegante">Cancel</button>
+
+                                </form>
+                                {% else %}
+                                <p>Canceled</p>
+                                {% endif %}
                             </div>
                         </div>
+                        {% if messages %}
+                                    <div class="messages">
+                                        {% for message in messages %}
+                                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                                            {{ message }}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
                     </li>
                     {% endfor %}
                 </ul>
@@ -223,7 +290,7 @@
                     <a href="{% url 'generatePdf' order.id %}" class="btn btn-primary">Download Invoice (PDF)</a>
                     <a href="{% url 'list_orders' %}" class="btn btn-custom">Back to Orders</a>
                 </div>
-            </div>
+                
             
 
 
