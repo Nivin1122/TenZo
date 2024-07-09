@@ -30,7 +30,7 @@ SECRET_KEY = env.get_value("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['13.48.58.113', '0.0.0.0']
 
 
 # Application definition
