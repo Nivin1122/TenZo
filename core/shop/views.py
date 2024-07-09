@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from product_side.models import Product,Category,Cart,CartItem,Order,OrderItem,Coupon,Wishlist,Wallet,Shipping_address
+from product_side.models import Product,Category,Cart,CartItem,Order,OrderItem,Coupon,Wishlist,Wallet,Shipping_address,WalletHistory
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
@@ -368,8 +368,17 @@ def cancel_order_item(request, order_item_id):
         # Update wallet balance if payment method is Razorpay
         if order.payment_method == "RAZORPAY":
             wallet = Wallet.objects.get(user=request.user)
-            wallet.balance += order_item.product.get_discounted_price() * order_item.quantity
+            amount = order_item.product.get_discounted_price() * order_item.quantity
+            wallet.balance += amount
             wallet.save()
+
+            # Log the wallet history
+            WalletHistory.objects.create(
+                wallet=wallet,
+                transaction_type='Credit',
+                amount=amount,
+                description=f'Order item {order_item.id} canceled'
+            )
 
     return redirect('order_detail', order_id=order.id)
 
@@ -380,14 +389,20 @@ def cancel_order_item(request, order_item_id):
 def cancel_orders(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     
-    
     if order.status != 'Canceled' and order.payment_method == 'COD':
-      
         if order.status == 'Delivered':
             try:
                 wallet = Wallet.objects.get(user=request.user)
                 wallet.balance += order.total_price
                 wallet.save()
+
+                # Log the wallet history
+                WalletHistory.objects.create(
+                    wallet=wallet,
+                    transaction_type='Credit',
+                    amount=order.total_price,
+                    description=f'Order {order.id} canceled'
+                )
             except Wallet.DoesNotExist:
                 pass
     if order.payment_method == "RAZORPAY":
@@ -396,9 +411,17 @@ def cancel_orders(request, order_id):
             order.save()
 
             wallet = Wallet.objects.get(user=request.user)
-            wallet.balance += order.total_price
+            amount = order.total_price
+            wallet.balance += amount
             wallet.save()
 
+            # Log the wallet history
+            WalletHistory.objects.create(
+                wallet=wallet,
+                transaction_type='Credit',
+                amount=amount,
+                description=f'Order {order.id} canceled'
+            )
         
     order.status = 'Canceled'
     order.save()
@@ -455,6 +478,13 @@ def wallet_detail(request):
         wallet_balance = Decimal('0.00')
         return render(request, 'wallet_detail.html', {'wallet_balance': wallet_balance})
     
+
+
+@login_required
+def wallet_history(request):
+    wallet = get_object_or_404(Wallet, user=request.user)
+    history = WalletHistory.objects.filter(wallet=wallet).order_by('-date')
+    return render(request, 'wallet_history.html', {'history': history})
 
 
 

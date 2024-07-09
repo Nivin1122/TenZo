@@ -186,3 +186,14 @@ class Wallet(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s Wallet"
+    
+
+class WalletHistory(models.Model):
+    wallet = models.ForeignKey('Wallet', on_delete=models.CASCADE)
+    transaction_type = models.CharField(max_length=10)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.wallet.user.username} - {self.transaction_type} - {self.amount}"

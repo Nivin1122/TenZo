@@ -27,5 +27,6 @@ urlpatterns = [
 
     path('return_order/<int:order_id>/', views.return_order, name='return_order'),
     path('wallet/', views.wallet_detail, name='wallet_detail'),
+    path('wallet/history/', views.wallet_history, name='wallet_history'),
     path('generatePdf/<int:order_id>/', views.generatePdf, name='generatePdf'),
 ]
