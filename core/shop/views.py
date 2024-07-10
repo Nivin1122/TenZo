@@ -17,7 +17,8 @@ from django.template.loader import render_to_string
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle,Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+from django.db import transaction
 
 
 
@@ -344,6 +345,7 @@ def order_detail(request, order_id):
 
 
 @login_required
+@transaction.atomic
 def cancel_order_item(request, order_item_id):
     order_item = get_object_or_404(OrderItem, id=order_item_id, order__user=request.user)
     order = order_item.order
@@ -362,14 +364,14 @@ def cancel_order_item(request, order_item_id):
         order_item.save()
 
         # Deduct the item's price from the total order price
-        order.total_price -= order_item.product.get_discounted_price() * order_item.quantity
+        order.total_price -= Decimal(str(order_item.product.get_discounted_price())) * Decimal(order_item.quantity)
         order.save()
 
         # Update wallet balance if payment method is Razorpay
         if order.payment_method == "RAZORPAY":
-            wallet = Wallet.objects.get(user=request.user)
-            amount = order_item.product.get_discounted_price() * order_item.quantity
-            wallet.balance += amount
+            wallet, created = Wallet.objects.get_or_create(user=request.user)
+            amount = Decimal(str(order_item.product.get_discounted_price())) * Decimal(order_item.quantity)
+            wallet.balance = Decimal(wallet.balance) + amount
             wallet.save()
 
             # Log the wallet history
@@ -386,33 +388,28 @@ def cancel_order_item(request, order_item_id):
 
 
 @login_required
+@transaction.atomic
 def cancel_orders(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     
-    if order.status != 'Canceled' and order.payment_method == 'COD':
-        if order.status == 'Delivered':
-            try:
-                wallet = Wallet.objects.get(user=request.user)
-                wallet.balance += order.total_price
+    if order.status != 'Canceled':
+        if order.payment_method == 'COD':
+            if order.status == 'Delivered':
+                wallet, created = Wallet.objects.get_or_create(user=request.user)
+                wallet.balance = Decimal(wallet.balance) + Decimal(str(order.total_price))
                 wallet.save()
 
                 # Log the wallet history
                 WalletHistory.objects.create(
                     wallet=wallet,
                     transaction_type='Credit',
-                    amount=order.total_price,
+                    amount=Decimal(str(order.total_price)),
                     description=f'Order {order.id} canceled'
                 )
-            except Wallet.DoesNotExist:
-                pass
-    if order.payment_method == "RAZORPAY":
-        if order.status != 'Canceled':
-            order.status = 'Canceled'
-            order.save()
-
-            wallet = Wallet.objects.get(user=request.user)
-            amount = order.total_price
-            wallet.balance += amount
+        elif order.payment_method == "RAZORPAY":
+            wallet, created = Wallet.objects.get_or_create(user=request.user)
+            amount = Decimal(str(order.total_price))
+            wallet.balance = Decimal(wallet.balance) + amount
             wallet.save()
 
             # Log the wallet history
@@ -423,8 +420,9 @@ def cancel_orders(request, order_id):
                 description=f'Order {order.id} canceled'
             )
         
-    order.status = 'Canceled'
-    order.save()
+        order.status = 'Canceled'
+        order.save()
+    
     return redirect('list_orders')
 
 
