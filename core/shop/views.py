@@ -124,20 +124,20 @@ def add_to_cart(request, product_id):
                 if cart_item.quantity < product.stock:
                     cart_item.quantity += 1
                     cart_item.save()
-                    response_data['message'] = "Product added to cart."
+                    response_data['message'] = "Product added to cart!!!."
                     response_data['success'] = True
                 else:
-                    response_data['message'] = "No more products left."
+                    response_data['message'] = "No more products left!!!."
                     response_data['success'] = False
             else:
                 cart_item.quantity = 1
                 cart_item.save()
-                response_data['message'] = "Product added to cart."
+                response_data['message'] = "Product added to cart!!!."
                 response_data['success'] = True
             
             Wishlist.objects.filter(user=user, product=product).delete()
         else:
-            response_data['message'] = "Product is out of stock."
+            response_data['message'] = "Product is out of stock!!!."
             response_data['success'] = False
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -195,7 +195,7 @@ def increase_quantity(request, cart_item_id):
             'cart_total': sum(item.quantity * item.product.price for item in Cart.objects.filter(user=request.user))
         }
     else:
-        response = {'error': 'No more products left in stock.'}
+        response = {'error': 'No more products left in stock!!!.'}
     return JsonResponse(response)
 
 
@@ -285,45 +285,6 @@ def place_order(request):
     return redirect('checkout')
 
 
-# @login_required
-# def place_order(request):
-#     if request.method == 'POST':
-#         selected_address_id = request.POST.get('selected_address')
-#         if not selected_address_id:
-#             return redirect('checkout') 
-
-#         address = Address.objects.get(id=selected_address_id)
-#         cart_items = Cart.objects.filter(user=request.user)
-#         total_price = sum(item.product.price * item.quantity for item in cart_items)
-#         payment_method = Order
-        
-#         order = Order.objects.create(
-#             user=request.user,
-#             address=address,
-#             payment_method='COD',
-#             total_price=total_price,
-#             created_at=timezone.now(),
-#             status='Pending'
-#         )
-
-#         for item in cart_items:
-#             OrderItem.objects.create(
-#                 order=order,
-#                 product=item.product,
-#                 quantity=item.quantity
-#             )
-  
-#             item.product.stock -= item.quantity
-#             item.product.save()
-
-
-#         cart_items.delete()
-
-#         return redirect('order_success', order_id=order.id)
-
-#     return redirect('checkout')
-
-
 
 def order_success(request, order_id):
     return render(request, 'order_success.html', {'order_id': order_id})
@@ -355,26 +316,25 @@ def cancel_order_item(request, order_item_id):
         return redirect('order_detail', order_id=order.id)
 
     if order_item.status != 'Delivered':
-        # Update stock
+ 
         order_item.product.stock += order_item.quantity
         order_item.product.save()
 
-        # Update the item's status
         order_item.status = 'Canceled'
         order_item.save()
 
-        # Deduct the item's price from the total order price
+    
         order.total_price -= Decimal(str(order_item.product.get_discounted_price())) * Decimal(order_item.quantity)
         order.save()
 
-        # Update wallet balance if payment method is Razorpay
+
         if order.payment_method == "RAZORPAY":
             wallet, created = Wallet.objects.get_or_create(user=request.user)
             amount = Decimal(str(order_item.product.get_discounted_price())) * Decimal(order_item.quantity)
             wallet.balance = Decimal(wallet.balance) + amount
             wallet.save()
 
-            # Log the wallet history
+         
             WalletHistory.objects.create(
                 wallet=wallet,
                 transaction_type='Credit',
@@ -399,7 +359,7 @@ def cancel_orders(request, order_id):
                 wallet.balance = Decimal(wallet.balance) + Decimal(str(order.total_price))
                 wallet.save()
 
-                # Log the wallet history
+               
                 WalletHistory.objects.create(
                     wallet=wallet,
                     transaction_type='Credit',
@@ -412,7 +372,6 @@ def cancel_orders(request, order_id):
             wallet.balance = Decimal(wallet.balance) + amount
             wallet.save()
 
-            # Log the wallet history
             WalletHistory.objects.create(
                 wallet=wallet,
                 transaction_type='Credit',
@@ -461,12 +420,6 @@ def return_order(request, order_id):
     return redirect('list_orders')
 
 
-
-# @login_required
-# def wallet_detail(request):
-#     wallet = get_object_or_404(Wallet, user=request.user)
-#     return render(request, 'wallet_detail.html', {'wallet': wallet})
-
 @login_required
 def wallet_detail(request):
     try:
@@ -488,10 +441,9 @@ def wallet_history(request):
 
 @login_required(login_url='/login/')
 def generatePdf(request, order_id):
-    # Retrieve the order object
+
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
-    # Create a PDF document
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="invoice_{order.id}.pdf"'
 
@@ -505,14 +457,11 @@ def generatePdf(request, order_id):
     elements.append(company_name)
     elements.append(Spacer(1, 12))
 
-    # Title
     title = Paragraph("Invoice", styles['Title'])
     elements.append(title)
 
-    # Create the main table data
     main_table_data = []
 
-    # Order Info
     order_info_data = [
         ["Order ID:", str(order.id)],
         ["Date:", order.created_at.strftime("%Y-%m-%d %H:%M")]
@@ -522,10 +471,8 @@ def generatePdf(request, order_id):
         ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey)
     ])])
 
-    # Add space between sections
     main_table_data.append([""])
 
-    # Shipping Address
     shipping_info_data = [
         ["Shipping Address:"],
         [f"Name: {order.shipping_address.name}"],
@@ -540,10 +487,8 @@ def generatePdf(request, order_id):
         ('BACKGROUND', (0, 0), (0, 0), colors.lightgrey)
     ])])
 
-    # Add space between sections
     main_table_data.append([""])
 
-    # Order Items
     order_items_data = [
         ["Product", "Quantity", "Price"]
     ]
@@ -560,10 +505,8 @@ def generatePdf(request, order_id):
     ])
     main_table_data.append([order_items_table])
 
-    # Add space between sections
     main_table_data.append([""])
 
-    # Total Price
     total_price_data = [
         ["Total Price:", f"Rs.{order.total_price:.2f}"]
     ]
@@ -572,7 +515,6 @@ def generatePdf(request, order_id):
         ('BACKGROUND', (0, 0), (0, 0), colors.lightgrey)
     ])])
 
-    # Create the main table
     main_table = Table(main_table_data, colWidths=[410], style=[
         ('BOX', (0, 0), (-1, -1), 1, colors.black),
         ('VALIGN', (0, 0), (-1, -1), 'TOP')
@@ -581,11 +523,9 @@ def generatePdf(request, order_id):
 
     doc.build(elements)
 
-    # Get PDF content and close buffer
     pdf = buffer.getvalue()
     buffer.close()
 
-    # Write PDF response
     response.write(pdf)
 
     return response

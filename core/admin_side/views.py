@@ -56,24 +56,22 @@ def admin_home(request):
     total_sales_amount = orders.aggregate(Sum('total_price'))['total_price__sum'] or 0
     total_sales_count = orders.aggregate(Count('id'))['id__count'] or 0
 
-    # Calculate overall discount
+    
     total_discount_amount = sum(
         item.quantity * (item.product.price - item.product.get_discounted_price())
         for order in orders
         for item in order.items.all()
     )
 
-    # Prepare data for the sales chart
     sales_by_date = orders.extra({'date': 'date(created_at)'}).values('date').annotate(total_sales=Sum('total_price')).order_by('date')
     dates = [entry['date'].strftime('%Y-%m-%d') for entry in sales_by_date]
     sales = [float(entry['total_sales']) for entry in sales_by_date]
 
-    # Prepare data for the donut chart - top products
     top_products = OrderItem.objects.values('product__name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:10]
     product_names = [product['product__name'] for product in top_products]
     product_quantities = [product['total_quantity'] for product in top_products]
 
-    # Prepare data for the donut chart - top categories
+    
     top_categories = OrderItem.objects.values('product__category__name').annotate(total_sales=Sum(F('quantity') * F('product__price'))).order_by('-total_sales')[:10]
     category_names = [category['product__category__name'] for category in top_categories]
     category_sales = [float(category['total_sales']) for category in top_categories]
@@ -529,29 +527,29 @@ def generateExcel(request):
 
     orders = Order.objects.filter(created_at__range=[start_date, end_date])
 
-    # Compute total sales amount
+  
     total_sales_amount = sum(order.total_price for order in orders)
 
-    # Create a workbook and add a worksheet
+
     wb = Workbook()
     ws = wb.active
     ws.title = "Sales Report"
 
-    # Adding headers
+
     ws.append(["Order ID", "Date", "Total Price"])
 
-    # Adding data
+
     for order in orders:
         ws.append([order.id, order.created_at.strftime("%Y-%m-%d %H:%M"), order.total_price])
 
-    # Adding total sales amount row
+
     ws.append(["Total Sales Amount", total_sales_amount])
 
-    # Create a response
+
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="sales_report.xlsx"'
 
-    # Save workbook to response
+
     wb.save(response)
 
     return response
@@ -563,7 +561,6 @@ def admin_offers(request):
     overall_sales_count = Order.objects.aggregate(total_sales=Count('total_price'))['total_sales'] or 0
     overall_order_amount = Order.objects.aggregate(total_order_amount=Sum('total_price'))['total_order_amount'] or 0
 
-    # Sales report logic
     today = timezone.now()
     start_date_str = request.GET.get('start_date')
     end_date_str = request.GET.get('end_date')
